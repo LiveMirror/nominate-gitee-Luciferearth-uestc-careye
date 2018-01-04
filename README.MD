@@ -4,7 +4,7 @@
 1. OpenCV 3.2
 2. Serinal
 3. CURL
-4. ekho3.0 
+4. ekho3.0
 5. caffe2
 ![](./1.png)  
 ![](./2.png)  
