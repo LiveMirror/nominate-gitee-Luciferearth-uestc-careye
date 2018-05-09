@@ -1,6 +1,5 @@
-build/*
+build/
 data/
-.idea/*
 .idea/
 cmake-build-debug/
 /3rdparty/caffe/
