@@ -1,5 +1,5 @@
-opencv-3.4.1/*
-opencv_build/*
+3rdparty/opencv-3.4.1/*
+3rdparty/opencv_build/*
 caffe/*
 caffe_build/*
 data/*
