@@ -1,7 +1,7 @@
 3rdparty/opencv-3.4.1/*
 3rdparty/opencv_build/*
-caffe/*
-caffe_build/*
+3rdparty/caffe/*
+3rdparty/caffe_build/*
 data/*
 .idea/*
 build/*
