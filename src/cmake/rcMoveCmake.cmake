@@ -1,0 +1,6 @@
+set(LIB_NAME rcmove)
+set(OpenCV_DIR opencv_build)
+set(SOURCE_FILES src/rc_move/rcmove.cpp)
+include_directories(src/include)
+add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
+target_link_libraries(${LIB_NAME} ${OPENCV_LIBS})
