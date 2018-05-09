@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/UESTC-SaveEye.iml" filepath="$PROJECT_DIR$/.idea/UESTC-SaveEye.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/uestc-careye.iml" filepath="$PROJECT_DIR$/.idea/uestc-careye.iml" />
     </modules>
   </component>
 </project>

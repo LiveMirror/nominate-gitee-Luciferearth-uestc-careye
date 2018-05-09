@@ -1,7 +1,8 @@
-3rdparty/opencv-3.4.1/*
-3rdparty/caffe/*
-3rdparty/*_build
-data/*
-.idea/*
 build/*
-cmake-build-debug/*
+data/
+.idea/
+cmake-build-debug/
+/3rdparty/caffe/
+/3rdparty/caffe_build/
+/3rdparty/opencv_build/
+/3rdparty/opencv-3.4.1/
