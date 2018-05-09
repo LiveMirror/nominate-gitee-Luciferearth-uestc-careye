@@ -1,3 +1,7 @@
+opencv-3.4.1/*
+opencv_build/*
+caffe/*
+caffe_build/*
 data/*
 .idea/*
 build/*
