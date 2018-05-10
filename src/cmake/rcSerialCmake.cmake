@@ -1,6 +1,6 @@
 set(LIB_NAME rcserial)
 set(OpenCV_DIR opencv_build)
-set(SOURCE_FILES src/rc_serial/serial.cpp)
+set(SOURCE_FILES src/rc_serial/rcserial.cpp)
 include_directories(src/include)
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(${LIB_NAME} ${OPENCV_LIBS})
+target_link_libraries(${LIB_NAME})

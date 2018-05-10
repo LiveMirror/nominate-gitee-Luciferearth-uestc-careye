@@ -5,11 +5,13 @@
 #include "detcetModel.h"
 #include "videoThread.h"
 #include "applog.h"
+
 int videoThread::startVideo() {
-    if(this->cap_id==666)
+#ifdef RC_TEST
         this->cap_devices.open("./road.mp4");
-    else
+#else
         this->cap_devices.open(this->cap_id);
+#endif
     loger.printInfo("find capture success");
     this->cap_open = (this->cap_devices.isOpened());
     if (this->cap_open) {

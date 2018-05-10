@@ -9,34 +9,16 @@
 #include <ctype.h>
 
 
-//====================================================================
-//====================================================================
-
-// 打开字库
-
-CvText::CvText(const char *freeType)
-{
+CvText::CvText(const char *freeType) {
     assert(freeType != NULL);
-
-    // 打开字库文件, 创建一个字体
-
-    if(FT_Init_FreeType(&m_library)) throw;
-    if(FT_New_Face(m_library, freeType, 0, &m_face)) throw;
-
-    // 设置字体输出参数
-
+    if (FT_Init_FreeType(&m_library)) throw;
+    if (FT_New_Face(m_library, freeType, 0, &m_face)) throw;
     restoreFont();
-
-    // 设置C语言的字符集环境
-
     setlocale(LC_ALL, "");
 }
 
-// 释放FreeType资源
-
-CvText::~CvText()
-{
-    FT_Done_Face    (m_face);
+CvText::~CvText() {
+    FT_Done_Face(m_face);
     FT_Done_FreeType(m_library);
 }
 
@@ -47,43 +29,34 @@ CvText::~CvText()
 // underline   - 下画线
 // diaphaneity   - 透明度
 
-void CvText::getFont(int *type, CvScalar *size, bool *underline, float *diaphaneity)
-{
-    if(type) *type = m_fontType;
-    if(size) *size = m_fontSize;
-    if(underline) *underline = m_fontUnderline;
-    if(diaphaneity) *diaphaneity = m_fontDiaphaneity;
+void CvText::getFont(int *type, CvScalar *size, bool *underline, float *diaphaneity) {
+    if (type) *type = m_fontType;
+    if (size) *size = m_fontSize;
+    if (underline) *underline = m_fontUnderline;
+    if (diaphaneity) *diaphaneity = m_fontDiaphaneity;
 }
 
-void CvText::setFont(int *type, CvScalar *size, bool *underline, float *diaphaneity)
-{
-    // 参数合法性检查
-
-    if(type)
-    {
-        if(type >= 0) m_fontType = *type;
+void CvText::setFont(int *type, CvScalar *size, bool *underline, float *diaphaneity) {
+    if (type) {
+        if (type >= 0) m_fontType = *type;
     }
-    if(size)
-    {
+    if (size) {
         m_fontSize.val[0] = fabs(size->val[0]);
         m_fontSize.val[1] = fabs(size->val[1]);
         m_fontSize.val[2] = fabs(size->val[2]);
         m_fontSize.val[3] = fabs(size->val[3]);
     }
-    if(underline)
-    {
-        m_fontUnderline   = *underline;
+    if (underline) {
+        m_fontUnderline = *underline;
     }
-    if(diaphaneity)
-    {
+    if (diaphaneity) {
         m_fontDiaphaneity = *diaphaneity;
     }
 }
 
 // 恢复原始的字体设置
 
-void CvText::restoreFont()
-{
+void CvText::restoreFont() {
     m_fontType = 0;            // 字体类型(不支持)
 
     m_fontSize.val[0] = 20;      // 字体大小
@@ -91,43 +64,40 @@ void CvText::restoreFont()
     m_fontSize.val[2] = 0.1;   // 间隔大小比例
     m_fontSize.val[3] = 0;      // 旋转角度(不支持)
 
-    m_fontUnderline   = false;   // 下画线(不支持)
+    m_fontUnderline = false;   // 下画线(不支持)
 
     m_fontDiaphaneity = 1.0;   // 色彩比例(可产生透明效果)
 
     // 设置字符大小
 
-    FT_Set_Pixel_Sizes(m_face, (int)m_fontSize.val[0], 0);
+    FT_Set_Pixel_Sizes(m_face, (int) m_fontSize.val[0], 0);
 }
 
 // 输出函数(颜色默认为黑色)
 
-int CvText::putText(IplImage *img, const char    *text, CvPoint pos)
-{
-    return putText(img, text, pos, CV_RGB(255,255,255));
+int CvText::putText(IplImage *img, const char *text, CvPoint pos) {
+    return putText(img, text, pos, CV_RGB(255, 255, 255));
 }
-int CvText::putText(IplImage *img, const wchar_t *text, CvPoint pos)
-{
-    return putText(img, text, pos, CV_RGB(255,255,255));
+
+int CvText::putText(IplImage *img, const wchar_t *text, CvPoint pos) {
+    return putText(img, text, pos, CV_RGB(255, 255, 255));
 }
 
 //
 
-int CvText::putText(IplImage *img, const char    *text, CvPoint pos, CvScalar color)
-{
-    if(img == NULL) return -1;
-    if(text == NULL) return -1;
+int CvText::putText(IplImage *img, const char *text, CvPoint pos, CvScalar color) {
+    if (img == NULL) return -1;
+    if (text == NULL) return -1;
 
     //
 
     int i;
-    for(i = 0; text[i] != '\0'; ++i)
-    {
+    for (i = 0; text[i] != '\0'; ++i) {
         wchar_t wc = text[i];
 
         // 解析双字节符号
 
-        if(!isascii(wc)) mbtowc(&wc, &text[i++], 2);
+        if (!isascii(wc)) mbtowc(&wc, &text[i++], 2);
 
         // 输出当前的字符
 
@@ -135,16 +105,15 @@ int CvText::putText(IplImage *img, const char    *text, CvPoint pos, CvScalar co
     }
     return i;
 }
-int CvText::putText(IplImage *img, const wchar_t *text, CvPoint pos, CvScalar color)
-{
-    if(img == NULL) return -1;
-    if(text == NULL) return -1;
+
+int CvText::putText(IplImage *img, const wchar_t *text, CvPoint pos, CvScalar color) {
+    if (img == NULL) return -1;
+    if (text == NULL) return -1;
 
     //
 
     int i;
-    for(i = 0; text[i] != '\0'; ++i)
-    {
+    for (i = 0; text[i] != '\0'; ++i) {
         // 输出当前的字符
 
         putWChar(img, text[i], pos, color);
@@ -154,8 +123,7 @@ int CvText::putText(IplImage *img, const wchar_t *text, CvPoint pos, CvScalar co
 
 // 输出当前字符, 更新m_pos位置
 
-void CvText::putWChar(IplImage *img, wchar_t wc, CvPoint &pos, CvScalar color)
-{
+void CvText::putWChar(IplImage *img, wchar_t wc, CvPoint &pos, CvScalar color) {
     // 根据unicode生成字体的二值位图
 
     FT_UInt glyph_index = FT_Get_Char_Index(m_face, wc);
@@ -173,41 +141,34 @@ void CvText::putWChar(IplImage *img, wchar_t wc, CvPoint &pos, CvScalar color)
 
     //
 
-    for(int i = 0; i < rows; ++i)
-    {
-        for(int j = 0; j < cols; ++j)
-        {
-            int off  = ((img->origin==0)? i: (rows-1-i))
-                       * slot->bitmap.pitch + j/8;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            int off = ((img->origin == 0) ? i : (rows - 1 - i))
+                      * slot->bitmap.pitch + j / 8;
 
-            if(slot->bitmap.buffer[off] & (0xC0 >> (j%8)))
-            {
-                int r = (img->origin==0)? pos.y - (rows-1-i): pos.y + i;;
+            if (slot->bitmap.buffer[off] & (0xC0 >> (j % 8))) {
+                int r = (img->origin == 0) ? pos.y - (rows - 1 - i) : pos.y + i;;
                 int c = pos.x + j;
 
-                if(r >= 0 && r < img->height
-                   && c >= 0 && c < img->width)
-                {
+                if (r >= 0 && r < img->height
+                    && c >= 0 && c < img->width) {
                     CvScalar scalar = cvGet2D(img, r, c);
 
                     // 进行色彩融合
 
                     float p = m_fontDiaphaneity;
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        scalar.val[k] = scalar.val[k]*(1-p) + color.val[k]*p;
+                    for (int k = 0; k < 4; ++k) {
+                        scalar.val[k] = scalar.val[k] * (1 - p) + color.val[k] * p;
                     }
 
                     cvSet2D(img, r, c, scalar);
                 }
             }
-        } // end for
-    } // end for
+        }
+    }
 
     // 修改下一个字的输出位置
-
-    double space = m_fontSize.val[0]*m_fontSize.val[1];
-    double sep   = m_fontSize.val[0]*m_fontSize.val[2];
-
-    pos.x += (int)((cols? cols: space) + sep);
+    double space = m_fontSize.val[0] * m_fontSize.val[1];
+    double sep = m_fontSize.val[0] * m_fontSize.val[2];
+    pos.x += (int) ((cols ? cols : space) + sep);
 }

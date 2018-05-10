@@ -1,78 +1,91 @@
+
 //
 // Created by norse on 17-4-19.
 //
+#include <rc_serial/rcserial.h>
+#include <rc_globalVarable/rc_global_serial.h>
+#include <rc_log/rclog.h>
+#ifdef __linux__
 
-#include "USBIOModel.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <termios.h>
 #include <zconf.h>
 #include <iostream>
 #include <cstring>
-#include "applog.h"
-#include "map"
-#define BUFFER_SIZE 80
-#define SUB_BIT {'\r','\n'}
-#define SEARCH_SIZE 2
 
-map<string,string> USBIOModel::getData() {
-    int fd;
-    fd = this->port;
+RC::SERIAL_FLAGS RC::Serial::recive(char &buffer) {
+    SERIAL_FLAGS empty;
+    int fd=this->device_point;
     if (fd) {
-        char recv_buf[BUFFER_SIZE] = {'\0'};
-        if (read(fd, recv_buf, BUFFER_SIZE) > 0) {
+        char recv_buf[RC_MAX_RECIVE_BUFFER_SIZE] = {'\0'};
+        if (read(fd, recv_buf, RC_MAX_RECIVE_BUFFER_SIZE) > 0) {
             //write(STDOUT_FILENO,ch,BUFFER_SIZE);
             //printf("--------%s\n",recv_buf);
-            return this->serializeData(recv_buf);
+            return RC::STRING::serial_encode(recv_buf);
         }
     }
-    map<string,string> empty;
     return empty;
 }
 
-int USBIOModel::sendData(char *buffer) {
+int RC::Serial::send(char *buffer) {
 
     int fd, wr_num, rd_num, status;
-    wr_num = write(fd, buffer, BUFFER_SIZE);
-    if (wr_num > 0) {
-        loger.logSuccess("write success!");
-    } else {
-        loger.logError("Faild Write");
-    }
+    wr_num = write(fd, buffer, RC_MAX_RECIVE_BUFFER_SIZE);
     return 0;
 
 }
 
-int USBIOModel::search_find(const char *chr_1, const char *chr_2) {
+int RC::STRING::serial_search_find(const char *chr_1, const char *chr_2) {
     int num_chr_1 = 0, num_chr_2 = 0;
-    for (int i = 0; i < SEARCH_SIZE; i++) {
+    for (int i = 0; i < RC_SEARCH_SIZE; i++) {
         num_chr_1 += (int) chr_1[i];
         num_chr_2 += (int) chr_2[i];
     }
     return num_chr_1 - num_chr_2;
 }
-using namespace std;
-map<string,string> USBIOModel::serializeData(char *data) {
-    map<string,string> empty;
-    char search[SEARCH_SIZE] = SUB_BIT;
+
+int RC::Serial::open(char *device) {
+    int fd;
+    struct termios st;
+    char ch[RC_MAX_RECIVE_BUFFER_SIZE];
+    if ((fd = open(device)) < 0) {
+        RC::LOG::logError(RC_STRING_USB_OPEN_ERROR);
+        return -1;
+    }
+    RC::LOG::logSuccess(RC_SREING_USB_OPEN_SUCCESS);
+    st.c_iflag = 1;
+    st.c_oflag = 0;
+    st.c_cflag = 0;
+    CS8 | CREAD | CLOCAL;
+    cfsetospeed(&st, B9600);
+    tcsetattr(fd, TCSANOW, &st);
+    this->device_point = fd;
+}
+
+int RC::Serial::release() {
+    if (this->device_point) {
+        tcflush(this->device_point, TCIOFLUSH);
+        close(this->device_point);
+    }
+}
+
+RC::SERIAL_FLAGS RC::STRING::serial_encode(char *data) {
+    SERIAL_FLAGS empty;
+    char search[RC_SEARCH_SIZE] = RC_SUB_BIT;
     int search_flag = -1;
     int top_c = 0;
     int head_flag = 0;
-    for (int i = 0; i < BUFFER_SIZE; i++) {
-        char find[SEARCH_SIZE] = {'\0'};
-        for (int count_c = 0; count_c < SEARCH_SIZE; count_c++) {
+    for (int i = 0; i < RC_MAX_RECIVE_BUFFER_SIZE; i++) {
+        char find[RC_SEARCH_SIZE] = {'\0'};
+        for (int count_c = 0; count_c < RC_SEARCH_SIZE; count_c++) {
             find[count_c] = data[top_c + count_c];
         }
-        if (top_c == 0 && search_find(find, search) == 0) {
+        if (top_c == 0 && STRING::serial_search_find(find, search) == 0) {
             head_flag = 1;
         }
         if (head_flag == 0)
             return empty;
         top_c++;
-        if (search_find(find, search) == 0) {
+        if (STRING::serial_search_find(find, search) == 0) {
             search_flag += 1;
         }
         if (search_flag == 1)break;
@@ -82,13 +95,13 @@ map<string,string> USBIOModel::serializeData(char *data) {
         buffer_from_serial[i] = data[i];
     }
     if (head_flag == 1 && search_flag == 1) {
-        map<string, string> data_map;
-        string GPS_E;
-        string GPS_N;
-        string GPS_M;
-        string GPS_KM;
-        string GPS_TEMPERTURE;
-        string GPS_TEMPERTURE_HUMIDDITY;
+        SERIAL_FLAGS data_map;
+        std::string GPS_E;
+        std::string GPS_N;
+        std::string GPS_M;
+        std::string GPS_KM;
+        std::string GPS_TEMPERTURE;
+        std::string GPS_TEMPERTURE_HUMIDDITY;
         int GPS_E_flag=0;
         int GPS_N_flag=0;
         int GPS_M_flag=0;
@@ -176,43 +189,21 @@ map<string,string> USBIOModel::serializeData(char *data) {
             }
         }
         if( GPS_E_flag==1&&
-                GPS_N_flag==1&&
-                GPS_M_flag==1&&
-                GPS_KM_flag==1&&
-                GPS_TEMPERTURE_flag==1&&
-                GPS_TEMPERTURE_HUMIDDITY_flag==1){
-            data_map.insert(pair<string, string>("E",GPS_E));
-            data_map.insert(pair<string, string>("N",GPS_N));
-            data_map.insert(pair<string, string>("M",GPS_E));
-            data_map.insert(pair<string, string>("KM",GPS_KM));
-            data_map.insert(pair<string, string>("TEMPERTURE",GPS_TEMPERTURE));
-            data_map.insert(pair<string, string>("TEMPERTURE_HUMIDDITY",GPS_TEMPERTURE_HUMIDDITY));
+            GPS_N_flag==1&&
+            GPS_M_flag==1&&
+            GPS_KM_flag==1&&
+            GPS_TEMPERTURE_flag==1&&
+            GPS_TEMPERTURE_HUMIDDITY_flag==1){
+            data_map.insert(SERIAL_FLAG("E",GPS_E));
+            data_map.insert(SERIAL_FLAG("N",GPS_N));
+            data_map.insert(SERIAL_FLAG("M",GPS_E));
+            data_map.insert(SERIAL_FLAG("KM",GPS_KM));
+            data_map.insert(SERIAL_FLAG("TEMPERTURE",GPS_TEMPERTURE));
+            data_map.insert(SERIAL_FLAG("TEMPERTURE_HUMIDDITY",GPS_TEMPERTURE_HUMIDDITY));
+
             return data_map;
         }
     }
     return empty;
 }
-int USBIOModel::findCOM() {
-    int fd;
-    struct termios st;
-    char ch[BUFFER_SIZE];
-    if ((fd = open("/dev/ttyUSB0", O_RDWR | O_NONBLOCK)) < 0) {
-        loger.printError("Cant open USB serial");
-        exit(1);
-    }
-    loger.printSuccess("Open USB serial");
-    st.c_iflag = 1;
-    st.c_oflag = 0;
-    st.c_cflag = 0;
-    CS8 | CREAD | CLOCAL;
-    cfsetospeed(&st, B9600);
-    tcsetattr(fd, TCSANOW, &st);
-    this->port = fd;
-}
-
-int USBIOModel::closeCOM() {
-    if (this->port) {
-        tcflush(this->port, TCIOFLUSH);
-        close(this->port);
-    }
-}
+#endif

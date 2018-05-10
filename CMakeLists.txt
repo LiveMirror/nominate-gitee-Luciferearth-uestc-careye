@@ -6,6 +6,8 @@ include(src/cmake/rcOpenCV.cmake)
 include(src/cmake/rcCaffe.cmake)
 include(src/cmake/rcEnviromentVariable.cmake)
 include(src/cmake/rcGlobalInclude.cmake)
+
+include(src/cmake/rcLogCmake.cmake)
 include(src/cmake/rcMainCmake.cmake)
 include(src/cmake/rcMoveCmake.cmake)
 include(src/cmake/rcCVCmake.cmake)

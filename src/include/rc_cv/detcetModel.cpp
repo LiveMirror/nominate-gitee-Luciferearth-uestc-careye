@@ -1,5 +1,5 @@
 //
-// Created by Summer-V on 17-4-14.
+// Created by Pulsar-V on 17-4-14.
 //
 
 #include <iostream>
@@ -9,50 +9,7 @@
 
 using namespace cv;
 using namespace std;
-struct line{
-    int theta;
-    int r;
-};
-Mat Detcet::detcetFace(Mat frame) {
-    CascadeClassifier face_cascade;
-    CascadeClassifier eyes_cascade;
-    if( !face_cascade.load( "./haarcascades/haarcascade_frontalface_alt.xml" ) ){ loger.printError("Error loading face cascade");}
-    if( !eyes_cascade.load( "./haarcascades/haarcascade_eye_tree_eyeglasses.xml" ) ){ loger.printError("Error loading eyes cascade");}
-    std::vector<Rect> faces;
-    Mat frame_gray;
-    cvtColor( frame, frame_gray, COLOR_BGR2GRAY );
-    equalizeHist( frame_gray, frame_gray );
-    face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
-    for ( size_t i = 0; i < faces.size(); i++ )
-    {
-        Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
-        ellipse( frame, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-        Mat faceROI = frame_gray( faces[i] );
-        std::vector<Rect> eyes;
-        eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
-        for ( size_t j = 0; j < eyes.size(); j++ )
-        {
-            Point eye_center( faces[i].x + eyes[j].x + eyes[j].width/2, faces[i].y + eyes[j].y + eyes[j].height/2 );
-            int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-            circle( frame, eye_center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
-        }
-    }
-}
 
-void Detcet::detcetBody(Mat frame) {
-    CascadeClassifier body_cascade;
-    if( !body_cascade.load( "./haarcascades/haarcascade_fullbody.xml" ) ){ printf("--(!)Error loading face cascade\n");}
-    //body_cascade.load("./haarcascades/haarcascade_frontalface_alt.xml");
-    std::vector<Rect> faces;
-    Mat frame_gray;
-    cvtColor(frame, frame_gray, COLOR_BGR2GRAY);
-    equalizeHist(frame_gray, frame_gray);
-    body_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0, Size(30, 30));
-    for (size_t i = 0; i < faces.size(); i++) {
-        Point center(faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2);
-        ellipse(frame, center, Size(faces[i].width / 2, faces[i].height / 2), 0, 0, 360, Scalar(255, 0, 255), 4, 8, 0);
-    }
-}
 Mat Detcet::detcetLines(Mat src,int width,int height) {
     Rect select;
     select.x = 0;
