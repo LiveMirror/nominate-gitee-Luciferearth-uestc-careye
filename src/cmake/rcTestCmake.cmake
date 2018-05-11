@@ -1,0 +1,7 @@
+if (RC_TEST)
+set(TEST_NAME rcserial_test)
+set(SERIAL_TEST src/rc_test/serial_test.cpp)
+include_directories(src/include)
+add_executable(${TEST_NAME} ${SERIAL_TEST})
+target_link_libraries(${TEST_NAME} ${OPENCV_LIBS} rcCV rcserial rclog)
+endif ()

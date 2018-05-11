@@ -8,8 +8,8 @@
 
 int RC::RobotCarMove::init(int camera_id, char *device) {
     this->camera_id = camera_id;
-    this->device = new Serial();
-    this->device->open(device);
+    this->serial_device = new Serial();
+    this->serial_device->openSerial(device);
 }
 
 int RC::RobotCarMove::start() {
@@ -24,9 +24,14 @@ int RC::RobotCarMove::start() {
             cap >> frame_image;
             cv::Mat output;
             RC::CV::detectLine(frame_image, &output);
-            if (!output.empty())
+            if (!output.empty()){
+                this->serial_device->send("a");
+                char buffer[64]={'\0'};
+                this->serial_device->recive(buffer);
+                RC::LOG::logDebug(buffer);
                 cv::imshow("sss", output);
-            if (cv::waitKey(10) == 'q')break;
+            }
+            if (cv::waitKey(100) == 'q')break;
         }
     }
     cv::destroyAllWindows();

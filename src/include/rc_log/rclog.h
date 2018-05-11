@@ -13,6 +13,7 @@ namespace RC{
         void logSuccess(char *str);
         void logError(char *str);
         void logInfo(char *str);
+        void logDebug(char *str);
     }
 }
 #endif //ROBOCAR_RCLOG_H

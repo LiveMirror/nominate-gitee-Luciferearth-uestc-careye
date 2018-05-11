@@ -6,30 +6,32 @@
 #include <rc_globalVarable/rc_global_serial.h>
 #include <rc_log/rclog.h>
 #ifdef __linux__
-
+#include <fcntl.h>
 #include <termios.h>
 #include <zconf.h>
+#include <string>
 #include <iostream>
-#include <cstring>
 
-RC::SERIAL_FLAGS RC::Serial::recive(char &buffer) {
+RC::SERIAL_FLAGS RC::Serial::recive(char *buffer) {
     SERIAL_FLAGS empty;
-    int fd=this->device_point;
-    if (fd) {
-        char recv_buf[RC_MAX_RECIVE_BUFFER_SIZE] = {'\0'};
-        if (read(fd, recv_buf, RC_MAX_RECIVE_BUFFER_SIZE) > 0) {
-            //write(STDOUT_FILENO,ch,BUFFER_SIZE);
-            //printf("--------%s\n",recv_buf);
-            return RC::STRING::serial_encode(recv_buf);
+    if (this->isOpend()) {
+//        char recv_buf[RC_MAX_RECIVE_BUFFER_SIZE] = {'\0'};
+//        std::string text;
+//        while(){
+//        }
+//        std::cout<<text;
+        if (read(this->device_point, buffer, 64) > 0) {
+//            write(STDOUT_FILENO,ch,BUFFER_SIZE);
+//            return RC::STRING::serial_encode(recv_buf);
         }
     }
     return empty;
 }
 
-int RC::Serial::send(char *buffer) {
-
-    int fd, wr_num, rd_num, status;
-    wr_num = write(fd, buffer, RC_MAX_RECIVE_BUFFER_SIZE);
+int RC::Serial::send(std::string str) {
+    char p='a';
+    int wr_num = write(this->device_point,str.c_str() , str.length());
+    if(wr_num)return 1;
     return 0;
 
 }
@@ -42,23 +44,26 @@ int RC::STRING::serial_search_find(const char *chr_1, const char *chr_2) {
     }
     return num_chr_1 - num_chr_2;
 }
+bool RC::Serial::isOpend() {
+    return (this->device_point!=-1? true: false);
+}
 
-int RC::Serial::open(char *device) {
-    int fd;
+int RC::Serial::openSerial(char *device) {
+    this->device_point=open(device,O_RDWR|O_NOCTTY|O_NDELAY);//O_NDELAY
     struct termios st;
     char ch[RC_MAX_RECIVE_BUFFER_SIZE];
-    if ((fd = open(device)) < 0) {
+    if (this->device_point < 0) {
         RC::LOG::logError(RC_STRING_USB_OPEN_ERROR);
         return -1;
     }
     RC::LOG::logSuccess(RC_SREING_USB_OPEN_SUCCESS);
-    st.c_iflag = 1;
-    st.c_oflag = 0;
-    st.c_cflag = 0;
-    CS8 | CREAD | CLOCAL;
-    cfsetospeed(&st, B9600);
-    tcsetattr(fd, TCSANOW, &st);
-    this->device_point = fd;
+//    st.c_iflag = 1;
+//    st.c_oflag = 0;
+//    st.c_cflag = 0;
+//    CS8 | CREAD | CLOCAL;
+//    cfsetospeed(&st, B9600);
+//    int set_config=tcsetattr(this->device_point, TCSANOW, &st);
+//    if(set_config)RC::LOG::logError("SetSpeedError");
 }
 
 int RC::Serial::release() {

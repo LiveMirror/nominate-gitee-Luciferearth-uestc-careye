@@ -5,5 +5,6 @@
 #ifndef ROBOCAR_MAIN_H
 #define ROBOCAR_MAIN_H
 #include <iostream>
-#include <opencv2/opencv.hpp>
+#define RC_SEERIAL_DEVICE "/dev/ttyUSB0"
+#define RC_CAMERA_DEVICE 1
 #endif //ROBOCAR_MAIN_H

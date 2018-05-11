@@ -12,7 +12,7 @@ namespace RC {
     class RobotCarMove {
     public:
         int camera_id = -1;
-        RC::Serial *device;
+        RC::Serial *serial_device;
 
         int init(int camera_id, char *device);
 

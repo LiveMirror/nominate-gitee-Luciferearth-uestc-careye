@@ -18,9 +18,10 @@ namespace RC{
     class Serial{
     public:
 #ifdef __linux__
-        int open(char* device);
-        int send(char *data);
-        SERIAL_FLAGS recive(char &buffer);
+        int openSerial(char* device);
+        int send(std::string str);
+        SERIAL_FLAGS recive(char *buffer);
+        bool isOpend();
         int release();
 #else
 

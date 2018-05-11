@@ -7,7 +7,8 @@
 
 #include "rc_global_serial.h"
 //Usb COM recive buffer size
-#define RC_MAX_RECIVE_BUFFER_SIZE 255
+#define RC_MAX_RECIVE_BUFFER_SIZE 64
+#define RC_MAX_SEND_BUFFER_SIZE 64
 //initation bit
 #define RC_SUB_BIT {'\r','\n'}
 //encode search size

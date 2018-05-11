@@ -65,7 +65,8 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
             int x1=l[0],y1=l[1],x2=l[2],y2=l[0];
             if(x1&&x2!=0){
                 double theta=atan((double)y1/(double)x1) - atan((double)y2/(double)x2);
-                std::cout<<theta<<std::endl;
+//                TODO:check lines
+//                std::cout<<theta<<std::endl;
             }
             cv::line(ROI_IMAGE,
                      cv::Point(x1, y1),
@@ -75,9 +76,9 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
                      cv::LINE_AA);
         }
     }
-    std::cout<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<std::endl;
+//    std::cout<<std::endl;
+//    std::cout<<std::endl;
+//    std::cout<<std::endl;
 //    drawDetectLines(src,);
     src.copyTo(*dst);
 //    delete(gray_hsv.data);

@@ -18,5 +18,8 @@ void RC::LOG::logError(char *str) {
 }
 
 void RC::LOG::logInfo(char *str) {
-    RC::LOG::printlog("[SUCCESS] ",(char*)str);
+    RC::LOG::printlog("[INFO] ",(char*)str);
+}
+void RC::LOG::logDebug(char *str) {
+    RC::LOG::printlog("[DEBUG] ",(char*)str);
 }
