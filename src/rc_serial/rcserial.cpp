@@ -9,27 +9,19 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <zconf.h>
-#include <string>
 #include <iostream>
 
 RC::SERIAL_FLAGS RC::Serial::recive(char *buffer) {
     SERIAL_FLAGS empty;
     if (this->isOpend()) {
-//        char recv_buf[RC_MAX_RECIVE_BUFFER_SIZE] = {'\0'};
-//        std::string text;
-//        while(){
-//        }
-//        std::cout<<text;
         if (read(this->device_point, buffer, 64) > 0) {
-//            write(STDOUT_FILENO,ch,BUFFER_SIZE);
-//            return RC::STRING::serial_encode(recv_buf);
+//            return RC::STRING::serial_encode(buffer);
         }
     }
     return empty;
 }
 
 int RC::Serial::send(std::string str) {
-    char p='a';
     int wr_num = write(this->device_point,str.c_str() , str.length());
     if(wr_num)return 1;
     return 0;
@@ -38,32 +30,25 @@ int RC::Serial::send(std::string str) {
 
 int RC::STRING::serial_search_find(const char *chr_1, const char *chr_2) {
     int num_chr_1 = 0, num_chr_2 = 0;
-    for (int i = 0; i < RC_SEARCH_SIZE; i++) {
+    for (int i = 0; i < RC_SERIAL_SEARCH_SIZE; i++) {
         num_chr_1 += (int) chr_1[i];
         num_chr_2 += (int) chr_2[i];
     }
     return num_chr_1 - num_chr_2;
 }
 bool RC::Serial::isOpend() {
-    return (this->device_point!=-1? true: false);
+    return (this->device_point!=RC_SERIAL_ERROR? true: false);
 }
 
 int RC::Serial::openSerial(char *device) {
     this->device_point=open(device,O_RDWR|O_NOCTTY|O_NDELAY);//O_NDELAY
     struct termios st;
-    char ch[RC_MAX_RECIVE_BUFFER_SIZE];
+    char ch[RC_SERIAL_MAX_RECIVE_BUFFER_SIZE];
     if (this->device_point < 0) {
-        RC::LOG::logError(RC_STRING_USB_OPEN_ERROR);
+        RC::LOG::logError(RC_SERIAL_STRING_USB_OPEN_ERROR);
         return -1;
     }
-    RC::LOG::logSuccess(RC_SREING_USB_OPEN_SUCCESS);
-//    st.c_iflag = 1;
-//    st.c_oflag = 0;
-//    st.c_cflag = 0;
-//    CS8 | CREAD | CLOCAL;
-//    cfsetospeed(&st, B9600);
-//    int set_config=tcsetattr(this->device_point, TCSANOW, &st);
-//    if(set_config)RC::LOG::logError("SetSpeedError");
+    RC::LOG::logSuccess(RC_SERIAL_SREING_USB_OPEN_SUCCESS);
 }
 
 int RC::Serial::release() {
@@ -75,13 +60,13 @@ int RC::Serial::release() {
 
 RC::SERIAL_FLAGS RC::STRING::serial_encode(char *data) {
     SERIAL_FLAGS empty;
-    char search[RC_SEARCH_SIZE] = RC_SUB_BIT;
+    char search[RC_SERIAL_SEARCH_SIZE] = RC_SERIAL_SUB_BIT;
     int search_flag = -1;
     int top_c = 0;
     int head_flag = 0;
-    for (int i = 0; i < RC_MAX_RECIVE_BUFFER_SIZE; i++) {
-        char find[RC_SEARCH_SIZE] = {'\0'};
-        for (int count_c = 0; count_c < RC_SEARCH_SIZE; count_c++) {
+    for (int i = 0; i < RC_SERIAL_MAX_RECIVE_BUFFER_SIZE; i++) {
+        char find[RC_SERIAL_SEARCH_SIZE] = {'\0'};
+        for (int count_c = 0; count_c < RC_SERIAL_SEARCH_SIZE; count_c++) {
             find[count_c] = data[top_c + count_c];
         }
         if (top_c == 0 && STRING::serial_search_find(find, search) == 0) {

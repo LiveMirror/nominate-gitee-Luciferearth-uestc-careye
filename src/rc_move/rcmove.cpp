@@ -14,7 +14,7 @@ int RC::RobotCarMove::init(int camera_id, char *device) {
 
 int RC::RobotCarMove::start() {
     if (camera_id == -1) {
-        RC::LOG::logError((char *) "You should be initation the camera index before start");
+        RC::LOG::logError(RC_DEVICE_PORT_INITATION_ERROR);
         return 0;
     }
     cv::Mat frame_image;
