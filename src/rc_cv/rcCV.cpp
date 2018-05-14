@@ -32,8 +32,8 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
     cv::cvtColor(ROI_IMAGE, gray_rgb, cv::COLOR_BGR2GRAY);
 
     cv::filter2D(gray_rgb, gray_rgb, CV_8UC1, kernel);
-    cv::imshow("gray_rgb",gray_rgb);
-    cv::imshow("gray_hsv",gray_hsv);
+//    cv::imshow("gray_rgb",gray_rgb);
+//    cv::imshow("gray_hsv",gray_hsv);
 //    cv::medianBlur(hsv_image, hsv_image, 5);
 
     cv::Canny(ROI_IMAGE, mask, 200, 255, 3);
@@ -93,7 +93,7 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
 //    cv::imshow("trash_rgb", trash_rgb);
 //    cv::imshow("cpu", dst_cpu);
 //    cv::imshow("mask", mask);
-    cv::imshow("out", out_mask);
+//    cv::imshow("out", out_mask);
 //    cv::imshow("hsv", hsv_image);
 }
 

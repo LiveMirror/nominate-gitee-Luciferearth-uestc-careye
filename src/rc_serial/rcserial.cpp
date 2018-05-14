@@ -3,14 +3,8 @@
 // Created by norse on 17-4-19.
 //
 #include <rc_serial/rcserial.h>
-#include <rc_globalVarable/rc_global_serial.h>
-#include <rc_log/rclog.h>
-#ifdef __linux__
-#include <fcntl.h>
-#include <termios.h>
-#include <zconf.h>
-#include <iostream>
 
+#ifdef __linux__
 RC::SERIAL_FLAGS RC::Serial::recive(char *buffer) {
     SERIAL_FLAGS empty;
     if (this->isOpend()) {

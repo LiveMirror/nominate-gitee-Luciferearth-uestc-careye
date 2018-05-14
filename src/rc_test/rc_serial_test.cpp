@@ -4,6 +4,7 @@
 #include <rc_serial/rcserial.h>
 #include <zconf.h>
 #include <iostream>
+#include <cstring>
 
 using namespace RC;
 
@@ -13,16 +14,18 @@ int main() {
     int counter=0;
     if (sr.isOpend()) {
         while (true) {
-            std::string p="aaaaaaaaaaaaaaaaaaaaaa";
+            std::string p="a";
             if(counter>1){
-                p="bbbbbbbbbbbbbbbbbbbbbbb";
+                p="a";
                 counter=0;
             }
             sr.send(p);
             char buffer[64] = {'\0'};
             sr.recive(buffer);
             sleep(1);
-            std::cout << buffer << std::endl;
+            if(strlen(buffer)>0){
+                std::cout << buffer << std::endl;
+            }
             counter+=1;
         }
 
