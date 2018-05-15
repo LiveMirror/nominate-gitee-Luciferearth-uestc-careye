@@ -6,3 +6,5 @@ cmake-build-debug/
 /3rdparty/caffe_build/
 /3rdparty/opencv_build/
 /3rdparty/opencv-3.4.1/
+/shell/remote_config.except
+/shell/update_remote_raspi.expect

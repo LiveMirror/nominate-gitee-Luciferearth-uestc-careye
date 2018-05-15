@@ -1,7 +1,5 @@
 #!/usr/bin/expect
-
 spawn echo Push to $remote_ssh
-
 spawn scp -r $local_file_path $remote_ssh
 expect "password:"
 send "hacker\n"
