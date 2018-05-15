@@ -2,12 +2,14 @@
 set timeout 30
 set raspi_remote_address
 set raspi_remote_user
+set raspi_remote_password
 set raspi_remote_file_path
 set raspi_remote_ssh $raspi_remote_user@$raspi_remote_address:$raspi_remote_file_path
 set raspi_local_file_path
 
 set robot_remote_address
 set robot_remote_user
+set robot_remote_password
 set robot_remote_file_path
 set robot_remote_ssh $robot_remote_user@$robot_remote_address:$robot_remote_file_path
 set robot_local_file_path
