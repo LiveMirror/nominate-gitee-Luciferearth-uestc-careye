@@ -20,7 +20,7 @@ namespace RC {
         void detectLine(cv::Mat src,cv::Mat *dst);
         std::vector<RC::rc_line> detectLine(cv::Mat &img, int threshold);
         void drawDetectLines(cv::Mat& image,const std::vector<cv::Vec4i>& lines,cv::Scalar & color);
-        int* detcetByRightAndLeft(cv::Mat &src);
+        void detcetByRightAndLeft(cv::Mat &src,int *ans);
     }
 }
 #endif //ROBOCAR_RCCV_CPP_H

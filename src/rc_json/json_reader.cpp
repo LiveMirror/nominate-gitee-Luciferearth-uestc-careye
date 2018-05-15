@@ -1,17 +1,16 @@
-// Copyright 2007-2011 Baptiste Lepilleur
+// Copyright 2007-2011 Baptiste Lepilleur and The JsonCpp Authors
 // Copyright (C) 2016 InfoTeCS JSC. All rights reserved.
 // Distributed under MIT license, or public domain if desired and
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/assertions.h>
-#include <json/reader.h>
-#include <json/value.h>
+#include <rc_json/assertions.h>
+#include <rc_json/reader.h>
+#include <rc_json/value.h>
 #include "json_tool.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 #include <utility>
-#include <cstdio>
 #include <cassert>
 #include <cstring>
 #include <istream>
@@ -20,24 +19,25 @@
 #include <set>
 #include <limits>
 
-#if defined(_MSC_VER)
-#if !defined(WINCE) && defined(__STDC_SECURE_LIB__) && _MSC_VER >= 1500 // VC++ 9.0 and above 
-#define snprintf sprintf_s
-#elif _MSC_VER >= 1900 // VC++ 14.0 and above
-#define snprintf std::snprintf
-#else
-#define snprintf _snprintf
-#endif
-#elif defined(__ANDROID__) || defined(__QNXNTO__)
-#define snprintf snprintf
-#elif __cplusplus >= 201103L
-#if !defined(__MINGW32__) && !defined(__CYGWIN__)
-#define snprintf std::snprintf
-#endif
-#endif
+#if __cplusplus >= 201103L
+  #include <cstdio>
 
-#if defined(__QNXNTO__)
-#define sscanf std::sscanf
+  #if !defined(snprintf)
+    #define snprintf std::snprintf
+  #endif
+
+  #if !defined(sscanf)
+    #define sscanf std::sscanf
+  #endif
+#else
+  #include <stdio.h>
+
+  #if defined(_MSC_VER)
+    #define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
+    #if !defined(snprintf)
+      #define snprintf _snprintf
+    #endif
+  #endif
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400 // VC++ 8.0
@@ -81,7 +81,7 @@ Features Features::strictMode() {
 // Implementation of class Reader
 // ////////////////////////////////
 
-static bool containsNewLine(Reader::Location begin, Reader::Location end) {
+bool Reader::containsNewLine(Reader::Location begin, Reader::Location end) {
   for (; begin < end; ++begin)
     if (*begin == '\n' || *begin == '\r')
       return true;
@@ -103,8 +103,7 @@ Reader::Reader(const Features& features)
 
 bool
 Reader::parse(const std::string& document, Value& root, bool collectComments) {
-  JSONCPP_STRING documentCopy(document.data(), document.data() + document.capacity());
-  std::swap(documentCopy, document_);
+  document_.assign(document.begin(), document.end());
   const char* begin = document_.c_str();
   const char* end = begin + document_.length();
   return parse(begin, end, root, collectComments);
@@ -114,7 +113,7 @@ bool Reader::parse(std::istream& sin, Value& root, bool collectComments) {
   // std::istream_iterator<char> begin(sin);
   // std::istream_iterator<char> end;
   // Those would allow streamed input from a file, if parse() were a
-  // template public_logic.
+  // template function.
 
   // Since JSONCPP_STRING is reference-counted, this at least does not
   // create an extra copy.
@@ -370,7 +369,7 @@ bool Reader::readComment() {
   return true;
 }
 
-static JSONCPP_STRING normalizeEOL(Reader::Location begin, Reader::Location end) {
+JSONCPP_STRING Reader::normalizeEOL(Reader::Location begin, Reader::Location end) {
   JSONCPP_STRING normalized;
   normalized.reserve(static_cast<size_t>(end - begin));
   Reader::Location current = begin;
@@ -1019,6 +1018,9 @@ private:
   void addComment(Location begin, Location end, CommentPlacement placement);
   void skipCommentTokens(Token& token);
 
+  static JSONCPP_STRING normalizeEOL(Location begin, Location end);
+  static bool containsNewLine(Location begin, Location end);
+
   typedef std::stack<Value*> Nodes;
   Nodes nodes_;
   Errors errors_;
@@ -1035,6 +1037,13 @@ private:
 };  // OurReader
 
 // complete copy of Read impl, for OurReader
+
+bool OurReader::containsNewLine(OurReader::Location begin, OurReader::Location end) {
+  for (; begin < end; ++begin)
+    if (*begin == '\n' || *begin == '\r')
+      return true;
+  return false;
+}
 
 OurReader::OurReader(OurFeatures const& features)
     : errors_(), document_(), begin_(), end_(), current_(), lastValueEnd_(),
@@ -1228,7 +1237,7 @@ bool OurReader::readToken(Token& token) {
     token.type_ = tokenString;
     ok = readStringSingleQuote();
     break;
-    } // else continue
+    } // else fall through
   case '/':
     token.type_ = tokenComment;
     ok = readComment();
@@ -1343,6 +1352,25 @@ bool OurReader::readComment() {
     addComment(commentBegin, current_, placement);
   }
   return true;
+}
+
+JSONCPP_STRING OurReader::normalizeEOL(OurReader::Location begin, OurReader::Location end) {
+  JSONCPP_STRING normalized;
+  normalized.reserve(static_cast<size_t>(end - begin));
+  OurReader::Location current = begin;
+  while (current != end) {
+    char c = *current++;
+    if (c == '\r') {
+      if (current != end && *current == '\n')
+         // convert dos EOL
+         ++current;
+      // convert Mac EOL
+      normalized += '\n';
+    } else {
+      normalized += c;
+    }
+  }
+  return normalized;
 }
 
 void
@@ -2024,10 +2052,6 @@ JSONCPP_ISTREAM& operator>>(JSONCPP_ISTREAM& sin, Value& root) {
   JSONCPP_STRING errs;
   bool ok = parseFromStream(b, sin, &root, &errs);
   if (!ok) {
-    fprintf(stderr,
-            "Error from reader: %s",
-            errs.c_str());
-
     throwRuntimeError(errs);
   }
   return sin;

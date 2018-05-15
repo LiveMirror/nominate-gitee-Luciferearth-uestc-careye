@@ -9,13 +9,13 @@
 #include <rc_log/rclog.h>
 #include <rc_serial/rcserial.h>
 #include <rc_globalVarable/rc_global_wheel.h>
+
 namespace RC {
     class RobotCarMove {
     public:
-        int camera_id = -1;
-        RC::Serial *serial_device;
-
         int init(int camera_id, char *device);
+
+        int init(char *video, char *device);
 
         int start();
 
@@ -37,6 +37,13 @@ namespace RC {
 
         void wheel_CW();//顺时针
         void wheel_AC();//逆时针
+    private:
+        int camera_id = -1;
+        RC::Serial *serial_device;
+        char *video = NULL;
+        int type = 0;
+
+        int init_serial_device(char *device);
     };
 }
 

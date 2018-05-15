@@ -5,10 +5,10 @@
 #include <rc_serial/rcserial.h>
 
 #ifdef __linux__
-RC::SERIAL_FLAGS RC::Serial::recive(char *buffer) {
+RC::SERIAL_FLAGS RC::Serial::recive(char *buffer,int size) {
     SERIAL_FLAGS empty;
     if (this->isOpend()) {
-        if (read(this->device_point, buffer, 64) > 0) {
+        if (read(this->device_point, buffer, size) > 0) {
 //            return RC::STRING::serial_encode(buffer);
         }
     }
@@ -21,6 +21,16 @@ int RC::Serial::send(std::string str) {
     return 0;
 
 }
+
+int RC::Serial::send(long comm) {
+    char commond=(char)comm;
+    int wr_num = write(this->device_point,&commond, 100);
+    if(wr_num)return 1;
+    return 0;
+
+}
+
+
 
 int RC::STRING::serial_search_find(const char *chr_1, const char *chr_2) {
     int num_chr_1 = 0, num_chr_2 = 0;

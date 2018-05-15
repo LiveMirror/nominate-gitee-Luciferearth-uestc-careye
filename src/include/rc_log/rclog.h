@@ -8,12 +8,12 @@
 #include <string>
 namespace RC{
     namespace LOG{
-        void printlog(char *logType,std::string str);
-        void printlog(char *logType,char *str);
-        void logSuccess(char *str);
-        void logError(char *str);
-        void logInfo(char *str);
-        void logDebug(char *str);
+        int printlog(char *logType,std::string str);
+        int printlog(char *logType,char *str);
+        int logSuccess(char *str);
+        int logError(char *str);
+        int logInfo(char *str);
+        int logDebug(char *str);
     }
 }
 #endif //ROBOCAR_RCLOG_H

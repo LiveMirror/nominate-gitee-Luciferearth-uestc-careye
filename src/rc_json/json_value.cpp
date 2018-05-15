@@ -1,12 +1,12 @@
-// Copyright 2011 Baptiste Lepilleur
+// Copyright 2011 Baptiste Lepilleur and The JsonCpp Authors
 // Distributed under MIT license, or public domain if desired and
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/assertions.h>
-#include <json/value.h>
-#include <json/writer.h>
+#include <rc_json/assertions.h>
+#include <rc_json/value.h>
+#include <rc_json/writer.h>
 #endif // if !defined(JSON_IS_AMALGAMATION)
 #include <math.h>
 #include <sstream>
@@ -18,6 +18,11 @@
 #endif
 #include <cstddef> // size_t
 #include <algorithm> // min()
+
+// Disable warning C4702 : unreachable code
+#if defined(_MSC_VER) && _MSC_VER >= 1800 // VC++ 12.0 and above
+#pragma warning(disable:4702)
+#endif
 
 #define JSON_ASSERT_UNREACHABLE assert(false)
 
@@ -63,6 +68,8 @@ static const double maxUInt64AsDouble = 18446744073709551615.0;
 const LargestInt Value::minLargestInt = LargestInt(~(LargestUInt(-1) / 2));
 const LargestInt Value::maxLargestInt = LargestInt(LargestUInt(-1) / 2);
 const LargestUInt Value::maxLargestUInt = LargestUInt(-1);
+
+const UInt Value::defaultRealPrecision = 17;
 
 #if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
 template <typename T, typename U>
@@ -292,10 +299,20 @@ void Value::CZString::swap(CZString& other) {
   std::swap(index_, other.index_);
 }
 
-Value::CZString& Value::CZString::operator=(CZString other) {
-  swap(other);
+Value::CZString& Value::CZString::operator=(const CZString& other) {
+  cstr_ = other.cstr_;
+  index_ = other.index_;
   return *this;
 }
+
+#if JSON_HAS_RVALUE_REFERENCES
+Value::CZString& Value::CZString::operator=(CZString&& other) {
+  cstr_ = other.cstr_;
+  index_ = other.index_;
+  other.cstr_ = nullptr;
+  return *this;
+}
+#endif
 
 bool Value::CZString::operator<(const CZString& other) const {
   if (!cstr_) return index_ < other.index_;
@@ -398,7 +415,7 @@ Value::Value(double value) {
 
 Value::Value(const char* value) {
   initBasic(stringValue, true);
-  JSON_ASSERT_MESSAGE(value != NULL, "Null Value Passed to Value Constructor");	
+  JSON_ASSERT_MESSAGE(value != NULL, "Null Value Passed to Value Constructor");
   value_.string_ = duplicateAndPrefixStringValue(value, static_cast<unsigned>(strlen(value)));
 }
 
@@ -431,48 +448,9 @@ Value::Value(bool value) {
   value_.bool_ = value;
 }
 
-Value::Value(Value const& other)
-    : type_(other.type_), allocated_(false)
-      ,
-      comments_(0), start_(other.start_), limit_(other.limit_)
-{
-  switch (type_) {
-  case nullValue:
-  case intValue:
-  case uintValue:
-  case realValue:
-  case booleanValue:
-    value_ = other.value_;
-    break;
-  case stringValue:
-    if (other.value_.string_ && other.allocated_) {
-      unsigned len;
-      char const* str;
-      decodePrefixedString(other.allocated_, other.value_.string_,
-          &len, &str);
-      value_.string_ = duplicateAndPrefixStringValue(str, len);
-      allocated_ = true;
-    } else {
-      value_.string_ = other.value_.string_;
-      allocated_ = false;
-    }
-    break;
-  case arrayValue:
-  case objectValue:
-    value_.map_ = new ObjectValues(*other.value_.map_);
-    break;
-  default:
-    JSON_ASSERT_UNREACHABLE;
-  }
-  if (other.comments_) {
-    comments_ = new CommentInfo[numberOfCommentPlacement];
-    for (int comment = 0; comment < numberOfCommentPlacement; ++comment) {
-      const CommentInfo& otherComment = other.comments_[comment];
-      if (otherComment.comment_)
-        comments_[comment].setComment(
-            otherComment.comment_, strlen(otherComment.comment_));
-    }
-  }
+Value::Value(const Value& other) {
+  dupPayload(other);
+  dupMeta(other);
 }
 
 #if JSON_HAS_RVALUE_REFERENCES
@@ -484,24 +462,7 @@ Value::Value(Value&& other) {
 #endif
 
 Value::~Value() {
-  switch (type_) {
-  case nullValue:
-  case intValue:
-  case uintValue:
-  case realValue:
-  case booleanValue:
-    break;
-  case stringValue:
-    if (allocated_)
-      releasePrefixedStringValue(value_.string_);
-    break;
-  case arrayValue:
-  case objectValue:
-    delete value_.map_;
-    break;
-  default:
-    JSON_ASSERT_UNREACHABLE;
-  }
+  releasePayload();
 
   delete[] comments_;
 
@@ -523,11 +484,22 @@ void Value::swapPayload(Value& other) {
   other.allocated_ = temp2 & 0x1;
 }
 
+void Value::copyPayload(const Value& other) {
+  releasePayload();
+  dupPayload(other);
+}
+
 void Value::swap(Value& other) {
   swapPayload(other);
   std::swap(comments_, other.comments_);
   std::swap(start_, other.start_);
   std::swap(limit_, other.limit_);
+}
+
+void Value::copy(const Value& other) {
+  copyPayload(other);
+  delete[] comments_;
+  dupMeta(other);
 }
 
 ValueType Value::type() const { return type_; }
@@ -939,7 +911,7 @@ bool Value::empty() const {
     return false;
 }
 
-bool Value::operator!() const { return isNull(); }
+Value::operator bool() const { return ! isNull(); }
 
 void Value::clear() {
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == arrayValue ||
@@ -966,7 +938,7 @@ void Value::resize(ArrayIndex newSize) {
   if (newSize == 0)
     clear();
   else if (newSize > oldSize)
-    (*this)[newSize - 1];
+    this->operator[](newSize - 1);
   else {
     for (ArrayIndex index = newSize; index < oldSize; ++index) {
       value_.map_->erase(index);
@@ -1024,6 +996,75 @@ void Value::initBasic(ValueType vtype, bool allocated) {
   comments_ = 0;
   start_ = 0;
   limit_ = 0;
+}
+
+void Value::dupPayload(const Value& other) {
+  type_ = other.type_;
+  allocated_ = false;
+  switch (type_) {
+  case nullValue:
+  case intValue:
+  case uintValue:
+  case realValue:
+  case booleanValue:
+    value_ = other.value_;
+    break;
+  case stringValue:
+    if (other.value_.string_ && other.allocated_) {
+      unsigned len;
+      char const* str;
+      decodePrefixedString(other.allocated_, other.value_.string_,
+          &len, &str);
+      value_.string_ = duplicateAndPrefixStringValue(str, len);
+      allocated_ = true;
+    } else {
+      value_.string_ = other.value_.string_;
+    }
+    break;
+  case arrayValue:
+  case objectValue:
+    value_.map_ = new ObjectValues(*other.value_.map_);
+    break;
+  default:
+    JSON_ASSERT_UNREACHABLE;
+  }
+}
+
+void Value::releasePayload() {
+  switch (type_) {
+  case nullValue:
+  case intValue:
+  case uintValue:
+  case realValue:
+  case booleanValue:
+    break;
+  case stringValue:
+    if (allocated_)
+      releasePrefixedStringValue(value_.string_);
+    break;
+  case arrayValue:
+  case objectValue:
+    delete value_.map_;
+    break;
+  default:
+    JSON_ASSERT_UNREACHABLE;
+  }
+}
+
+void Value::dupMeta(const Value& other) {
+  if (other.comments_) {
+    comments_ = new CommentInfo[numberOfCommentPlacement];
+    for (int comment = 0; comment < numberOfCommentPlacement; ++comment) {
+      const CommentInfo& otherComment = other.comments_[comment];
+      if (otherComment.comment_)
+        comments_[comment].setComment(
+            otherComment.comment_, strlen(otherComment.comment_));
+    }
+  } else {
+    comments_ = 0;
+  }
+  start_ = other.start_;
+  limit_ = other.limit_;
 }
 
 // Access an object value by name, create a null member if it does not exist.
@@ -1124,6 +1165,10 @@ Value const& Value::operator[](CppTL::ConstString const& key) const
 
 Value& Value::append(const Value& value) { return (*this)[size()] = value; }
 
+#if JSON_HAS_RVALUE_REFERENCES
+  Value& Value::append(Value&& value) { return (*this)[size()] = std::move(value); }
+#endif
+
 Value Value::get(char const* key, char const* cend, Value const& defaultValue) const
 {
   Value const* found = find(key, cend);
@@ -1148,7 +1193,12 @@ bool Value::removeMember(const char* key, const char* cend, Value* removed)
   ObjectValues::iterator it = value_.map_->find(actualKey);
   if (it == value_.map_->end())
     return false;
-  *removed = it->second;
+  if (removed)
+#if JSON_HAS_RVALUE_REFERENCES
+    *removed = std::move(it->second);
+#else
+    *removed = it->second;
+#endif
   value_.map_->erase(it);
   return true;
 }
@@ -1160,20 +1210,19 @@ bool Value::removeMember(JSONCPP_STRING const& key, Value* removed)
 {
   return removeMember(key.data(), key.data() + key.length(), removed);
 }
-Value Value::removeMember(const char* key)
+void Value::removeMember(const char* key)
 {
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == objectValue,
                       "in Json::Value::removeMember(): requires objectValue");
   if (type_ == nullValue)
-    return nullSingleton();
+    return;
 
-  Value removed;  // null
-  removeMember(key, key + strlen(key), &removed);
-  return removed; // still null if removeMember() did nothing
+  CZString actualKey(key, unsigned(strlen(key)), CZString::noDuplication);
+  value_.map_->erase(actualKey);
 }
-Value Value::removeMember(const JSONCPP_STRING& key)
+void Value::removeMember(const JSONCPP_STRING& key)
 {
-  return removeMember(key.c_str());
+  removeMember(key.c_str());
 }
 
 bool Value::removeIndex(ArrayIndex index, Value* removed) {
@@ -1426,8 +1475,13 @@ ptrdiff_t Value::getOffsetStart() const { return start_; }
 ptrdiff_t Value::getOffsetLimit() const { return limit_; }
 
 JSONCPP_STRING Value::toStyledString() const {
-  StyledWriter writer;
-  return writer.write(*this);
+  StreamWriterBuilder builder;
+
+  JSONCPP_STRING out = this->hasComment(commentBefore) ? "\n" : "";
+  out += Json::writeString(builder, *this);
+  out += "\n";
+
+  return out;
 }
 
 Value::const_iterator Value::begin() const {

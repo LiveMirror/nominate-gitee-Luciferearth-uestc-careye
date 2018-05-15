@@ -169,19 +169,45 @@ std::vector<cv::Rect> RC::CV::detcetBody(cv::Mat src) {
     body_cascade.detectMultiScale(frame_gray, bodies, 1.1, 2, 0, cv::Size(30, 30));
     return bodies;
 }
-int* RC::CV::detcetByRightAndLeft(cv::Mat &src) {
+//TODO:TEST
+double sliderValue;//滚动条对应变量
+const int Maxsilder = 255;
+int Sildermark=70;//滚动条对应变量
+cv::Mat dst;
+
+
+void on_Trackbar(int, void*)
+{
+    sliderValue = (double)Sildermark / Maxsilder;
+    cv::imshow("二值化阈值", dst);
+}
+void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
+    cv::Mat ROI_IMAGE=src(cv::Rect(src.cols/4,src.rows/2,src.cols/2,src.rows/2));
     cv::Mat thresh_image;
-    double thresh = 100;
-    int maxVal = 255;
+    cv::Mat gray_image;
+
     int left;
     int right;
-    cv::threshold(src,thresh_image,thresh,maxVal,cv::THRESH_BINARY);
-    for(int x=0;x<src.rows;x+=1){
-        for(int y1=0,y2=0;y1<thresh_image.cols/2;y1+=1,y2+=1){
-//            if(thresh_image.at(x,y1)==1)left+=1;
-//            if(thresh_image.at(x,y2)==1)right+=1;
+
+    double thresh = Sildermark;
+    cv::namedWindow("二值化阈值", 1);
+    char TrackbarName[50];
+    sprintf(TrackbarName, "二值化阈值 %d", Maxsilder);
+    cv::createTrackbar(TrackbarName, "二值化阈值", &Sildermark, Maxsilder, on_Trackbar);
+
+    cv::cvtColor(ROI_IMAGE, gray_image, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray_image,thresh_image,thresh,255,cv::THRESH_BINARY);
+
+
+    for(int x=0;x<thresh_image.rows;x+=1){
+        for(int y1=0,y2=thresh_image.cols/2;y1<thresh_image.cols/2;y1+=1,y2+=1){
+            if(thresh_image.at<uchar>(x,y1)<50)left+=1;
+            if(thresh_image.at<uchar>(x,y2)<50)right+=1;
         }
     }
-    int ans[]={left,right};
-    return ans;
+
+    dst=thresh_image;
+    on_Trackbar(Sildermark, 0);
+    ans[0]=left;
+    ans[1]=right;
 }

@@ -20,5 +20,6 @@
 #define RC_WHEEL_AC "j"
 
 #define RC_MOVE_DEVICE_PORT_INITATION_ERROR (char *) "You should be initation the camera index before start"
+#define RC_OPEN_CAMERA_ERROR (char *) "Can not open such device or video"
 
 #endif //ROBOCAR_RC_GLOBAL_WHEEL_H

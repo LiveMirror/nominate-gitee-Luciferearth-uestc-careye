@@ -1,4 +1,4 @@
-set(LIB_NAME rcCV)
+set(LIB_NAME rccv)
 set(SOURCE_FILES src/rc_cv/rcCV.cpp)
 include_directories(src/include)
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})

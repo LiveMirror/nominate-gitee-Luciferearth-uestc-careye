@@ -23,3 +23,6 @@ set(OPENCV_LIBS
         opencv_superres
         opencv_video
         opencv_viz)
+set(VLC_LIBS
+        vlc
+        )

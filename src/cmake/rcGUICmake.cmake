@@ -1,5 +1,4 @@
-set(LIB_NAME rcGUI)
-set(OpenCV_DIR opencv_build)
+set(LIB_NAME rcgui)
 set(SOURCE_FILES src/rc_gui/rcGUI.cpp)
 include_directories(src/include)
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})

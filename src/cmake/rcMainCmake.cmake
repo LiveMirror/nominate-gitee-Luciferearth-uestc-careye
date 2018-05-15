@@ -1,5 +1,4 @@
 set(EXE_NAME RoboCar)
-set(OpenCV_DIR opencv_build)
 set(SOURCE_FILES src/rc_main/main.cpp)
 include_directories(src/include)
 add_executable(${EXE_NAME} ${SOURCE_FILES})

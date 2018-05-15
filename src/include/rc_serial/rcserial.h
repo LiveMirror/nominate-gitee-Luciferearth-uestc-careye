@@ -25,7 +25,8 @@ namespace RC{
 #ifdef __linux__
         int openSerial(char* device);
         int send(std::string str);
-        SERIAL_FLAGS recive(char *buffer);
+        int send(long comm);
+        SERIAL_FLAGS recive(char *buffer,int size);
         bool isOpend();
         int release();
 #else

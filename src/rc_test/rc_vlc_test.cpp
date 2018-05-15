@@ -1,20 +1,17 @@
 //
-// Created by PulsarV on 18-5-12.
+// Created by PulsarV on 18-5-14.
 //
 #include <opencv2/opencv.hpp>
 #include <rc_cv/rcCV.h>
-
-int main() {
+int main(){
     cv::VideoCapture cap;
-    cap.open(1);
+    cap.open(0);
     if (cap.isOpened()) {
         while (true) {
             cv::Mat frame, output;
             cap >> frame;
-            int ans[2];
-//            RC::CV::detectLine(frame, &output);
-            RC::CV::detcetByRightAndLeft(frame,ans);
-            cv::imshow("output", frame);
+            RC::CV::detectLine(frame, &output);
+            cv::imshow("output", output);
             if (cv::waitKey(100) == 'q')break;
         }
     }
