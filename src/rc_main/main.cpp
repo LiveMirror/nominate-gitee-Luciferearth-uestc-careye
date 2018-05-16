@@ -1,4 +1,5 @@
 #include <rc_main/main.h>
+#include <rc_task/rcTaskManager.h>
 
 int main(int argc, char **argv) {
     RC::LOG::logInfo(RC_STRING_SYSTEM_START);
@@ -21,12 +22,12 @@ int main(int argc, char **argv) {
             return 0;
         }
     }
-    RC::RobotCarMove robot;
+    RC::TaskManager taskmanager("RoboTest");
     if (CAMERA_VEDIO_FILE != NULL)
-        robot.init(CAMERA_VEDIO_FILE, SEERIAL_DEVICE);
+        taskmanager.init(CAMERA_VEDIO_FILE, SEERIAL_DEVICE);
     else
-        robot.init(CAMERA_DEVICE, SEERIAL_DEVICE);
-    robot.start();
+        taskmanager.init(CAMERA_DEVICE, SEERIAL_DEVICE);
+    taskmanager.start();
     return 0;
 }
 

@@ -2,6 +2,13 @@
 // Created by PulsarV on 18-5-14.
 //
 #include <rc_task/rcVideoStreamQueue.h>
+
+int RC::ImageTaskQueue::argc;
+char **RC::ImageTaskQueue::argv;
+RC::rciqueue RC::ImageTaskQueue::guiImage;
+RC::rciqueue RC::ImageTaskQueue::webImage;
+RC::rciqueue webImage;
+
 int RC::ImageTaskQueue::initTaskMannger(int argc, char **argv) {
     RC::LOG::logInfo(RC_VIDEOQUEUE_STRING_INITATION);
     ImageTaskQueue::argc=argc;

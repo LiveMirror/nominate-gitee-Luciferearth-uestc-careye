@@ -27,6 +27,7 @@ int RC::RobotCarMove::init_serial_device(char *device) {
 
 int RC::RobotCarMove::start() {
     cv::VideoCapture cap;
+    LOG::logError("Open Camera Device...");
     switch (this->type) {
         case RC_PLAY_BY_CAMERA:
             if (this->camera_id != -1)
@@ -56,7 +57,7 @@ int RC::RobotCarMove::start() {
                         this->wheel_2_forward(1);
                     this->wheel_go_forward();
                     char buffer[64] = {'\0'};
-                    this->serial_device->recive(buffer);
+                    this->serial_device->recive(buffer,64);
                     std::string data = buffer;
                     if (!data.empty())
                         RC::LOG::logDebug(buffer);

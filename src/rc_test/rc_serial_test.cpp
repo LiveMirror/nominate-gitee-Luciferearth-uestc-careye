@@ -21,7 +21,6 @@ int main() {
             }
             sr.send(p);
             char buffer[64] = {'\0'};
-            sr.recive(buffer);
             sleep(1);
             if(strlen(buffer)>0){
                 std::cout << buffer << std::endl;

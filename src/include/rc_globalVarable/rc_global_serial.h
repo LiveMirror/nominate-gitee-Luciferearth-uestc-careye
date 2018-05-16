@@ -16,7 +16,7 @@
 #define RC_SERIAL_STRING_USB_OPEN_ERROR (char*)"Cant open USB COM"
 #define RC_SERIAL_SREING_USB_OPEN_SUCCESS (char*)"Open USB serial"
 #define RC_SERIAL_ERROR -1
-
+#define RC_SERIAL_MAX_RECIVE_BUFFER_SIZE 64
 //JY901 COMMMOND
 #define GYRO_COMMOND_ERROE "Commond Error or no commond default to set to once"
 #define GYRO_0D1HZ 1
