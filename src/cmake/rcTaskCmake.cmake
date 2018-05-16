@@ -6,4 +6,4 @@ set(SOURCE_FILES
         )
 include_directories(src/include)
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(${LIB_NAME} ${OpenCV_LIB} boost_system boost_thread rcmove rclog)
+target_link_libraries(${LIB_NAME} ${OpenCV_LIBS} boost_system boost_thread rcmove rclog)
