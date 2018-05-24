@@ -10,8 +10,9 @@
 #include <rc_move/rcmove.h>
 #include <boost/thread/thread.hpp>
 namespace RC{
-    typedef std::map<std::string,boost::thread> rc_ThreadPool;
-    typedef std::pair<std::string,boost::thread> rc_ThreadUnion;
+    typedef boost::thread rc_Thread;
+    typedef std::map<std::string,rc_Thread> rc_ThreadPool;
+    typedef std::pair<std::string,rc_Thread> rc_ThreadUnion;
     typedef struct _DeviceInfo{
         char *serial_port;
         int camera_index;

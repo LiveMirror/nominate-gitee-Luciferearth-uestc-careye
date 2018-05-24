@@ -10,13 +10,15 @@ void RC::start_rtmp_server(ServerInfo server_info) {
 
 }
 void RC::d_start_robot(DeviceInfo device_info) {
-    RC::LOG::logInfo("Waiting for loading....");
+    RC::LOG::logInfo((char*)"Waiting for loading....");
     sleep(1);
     RobotCarMove robot;
     robot.init(device_info.camera_index, device_info.serial_port);
     robot.start();
 }
 void RC::f_start_robot(FDeviceInfo device_info) {
+    RC::LOG::logInfo((char*)"Waiting for loading....");
+    sleep(1);
     RobotCarMove robot;
     robot.init(device_info.camera_file_path, device_info.serial_port);
     robot.start();
@@ -28,20 +30,20 @@ void RC::TaskManager::init( int camera_index,char *serial_port, char *server_add
     DeviceInfo d_info;
     d_info.serial_port=serial_port;
     d_info.camera_index=camera_index;
-    pthread_t p_robot,p_rtmp_server;
-    RC::LOG::logInfo("Start Robot");
-    boost::thread t_robot(boost::bind(d_start_robot,d_info));
+    RC::LOG::logInfo((char*)"Start Robot");
+    rc_Thread t_robot(boost::bind(d_start_robot,d_info));
 //    this->RobotServer.insert(rc_ThreadUnion("robot",t_robot));
+    t_robot.join();
     this->is_init=true;
 }
 void RC::TaskManager::init(char *camera_file_path, char *serial_port,char *server_address, int port) {
-    pthread_t p_robot,p_rtmp_server;
     FDeviceInfo d_info;
     d_info.serial_port=serial_port;
     d_info.camera_file_path=camera_file_path;
     RC::LOG::logInfo("Start Robot");
-//    boost::thread t_robot(f_start_robot(d_info));
+    boost::thread t_robot(boost::bind(f_start_robot,d_info));
 //    this->RobotServer.insert(rc_ThreadUnion("robot",t_robot));
+    t_robot.join();
     this->is_init=true;
 }
 int RC::TaskManager::start() {

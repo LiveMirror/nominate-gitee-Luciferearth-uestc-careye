@@ -8,7 +8,7 @@ include(src/cmake/rcOpenCVCmake.cmake)
 include(src/cmake/rcCaffeCmake.cmake)
 include(src/cmake/rcEnviromentVariableCmake.cmake)
 include(src/cmake/rcGlobalIncludeCmake.cmake)
-
+include(src/cmake/rcVLCCmake.cmake)
 include(src/cmake/rcJsonCmake.cmake)
 include(src/cmake/rcLogCmake.cmake)
 

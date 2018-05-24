@@ -27,28 +27,34 @@ int RC::RobotCarMove::init_serial_device(char *device) {
 
 int RC::RobotCarMove::start() {
     cv::VideoCapture cap;
-    LOG::logError("Open Camera Device...");
+    LOG::logInfo("Open Camera Stream...");
     switch (this->type) {
         case RC_PLAY_BY_CAMERA:
-            if (this->camera_id != -1)
-                cap.open(this->camera_id);
+            if (this->camera_id != -1){
+                LOG::logInfo("Open Camera Device From Device");
+                int id=this->camera_id;
+                cap.open(id);
+            }
             else
-                return RC::LOG::logError(RC_MOVE_DEVICE_PORT_INITATION_ERROR);
+                return LOG::logError(RC_MOVE_DEVICE_PORT_INITATION_ERROR);
             break;
         case RC_PLAY_BY_VIDEO:
-            if (this->video != NULL)
+            if (this->video != NULL){
+                LOG::logInfo("Open Camera Device From Files");
                 cap.open(this->camera_id);
+            }
             else
-                return RC::LOG::logError(RC_MOVE_DEVICE_PORT_INITATION_ERROR);
+                return LOG::logError(RC_MOVE_DEVICE_PORT_INITATION_ERROR);
             break;
     }
     if (cap.isOpened()) {
+        LOG::logSuccess("Open Successed");
         while (true) {
             cv::Mat frame,output;
             cap >> frame;
 //            RC::CV::detectLine(frame, &output);
             int ans[2];
-            RC::CV::detcetByRightAndLeft(frame,ans);
+            CV::detcetByRightAndLeft(frame,ans);
             if (not frame.empty()) {
                 if (this->serial_device->isOpend()) {
                     if(ans[0]>ans[1])
@@ -60,13 +66,13 @@ int RC::RobotCarMove::start() {
                     this->serial_device->recive(buffer,64);
                     std::string data = buffer;
                     if (!data.empty())
-                        RC::LOG::logDebug(buffer);
+                        LOG::logDebug(buffer);
                 }
             }
             if (cv::waitKey(100) == 'q')break;
         }
     } else
-        return RC::LOG::logError(RC_OPEN_CAMERA_ERROR);
+        return LOG::logError(RC_OPEN_CAMERA_ERROR);
     this->serial_device->release();
     cv::destroyAllWindows();
     return 1;

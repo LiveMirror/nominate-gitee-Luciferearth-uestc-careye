@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
         taskmanager.init(CAMERA_VEDIO_FILE, SEERIAL_DEVICE);
     else
         taskmanager.init(CAMERA_DEVICE, SEERIAL_DEVICE);
-    taskmanager.start();
+//    taskmanager.start();
     return 0;
 }
 
