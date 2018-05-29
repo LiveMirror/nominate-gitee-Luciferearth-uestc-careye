@@ -16,11 +16,13 @@ namespace RC{
     typedef struct _DeviceInfo{
         char *serial_port;
         int camera_index;
+        char *mapping;
     }DeviceInfo;
     typedef struct _FDeviceInfo{
         int type=CAMERA_TYPE_FILE;
         char *serial_port;
         char *camera_file_path;
+        char *mapping;
     }FDeviceInfo;
     typedef struct _ServerInfo{
         char *server_address;
@@ -32,8 +34,8 @@ namespace RC{
     class TaskManager{
     public:
         TaskManager(char *server_name);
-        void init(int camera_index,char *serial_port,char *server_address="0.0.0.1",int port=-1);
-        void init(char *camera_file_path,char *serial_port,char *server_address="0.0.0.0",int port=-1);
+        void init(int camera_index,char *serial_port,char* mapping,char *server_address="0.0.0.1",int port=-1);
+        void init(char *camera_file_path,char *serial_port,char *mapping,char *server_address="0.0.0.0",int port=-1);
         int start();
     private:
         bool is_init= false;

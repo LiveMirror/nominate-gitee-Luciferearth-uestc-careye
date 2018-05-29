@@ -9,4 +9,5 @@
 #define RC_PARAM_SERIAL "-serial"
 #define RC_PARAM_VIDEO "-vedio"
 #define RC_PARAM_HELP "-help"
+#define RC_PARAM_MAPPING "-map"
 #endif //ROBOCAR_RC_PARAM_H

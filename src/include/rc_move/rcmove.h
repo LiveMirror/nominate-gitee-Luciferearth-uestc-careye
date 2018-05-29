@@ -13,11 +13,13 @@
 namespace RC {
     class RobotCarMove {
     public:
-        int init(int camera_id, char *device);
+        int init(int camera_id, char *device,char *mapping);
 
-        int init(char *video, char *device);
+        int init(char *video, char *device,char *mapping);
 
         int start();
+
+        void command(char com);
 
         void wheel_1_forward(double trangle);
 
@@ -42,7 +44,8 @@ namespace RC {
         RC::Serial *serial_device;
         char *video = NULL;
         int type = 0;
-
+        char *mapping=NULL;
+        bool AutoMove=false;
         int init_serial_device(char *device);
     };
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 set timeout 30
-set robot_remote_address "192.168.1.106"
+set robot_remote_address "192.168.1.133"
 set robot_remote_user "pulsar"
 set robot_remote_password "hacker\n"
 set robot_remote_file_path "/home/pulsar/workspace/RoboCar"

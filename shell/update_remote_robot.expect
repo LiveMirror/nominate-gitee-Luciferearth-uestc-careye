@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 set timeout 30
-set raspi_remote_address "192.168.1.103"
+set raspi_remote_address "192.168.1.109"
 set raspi_remote_user "pi"
 set raspi_remote_password "hacker\n"
 set raspi_remote_file_path "/home/pi/workspace/uestc-careye"
