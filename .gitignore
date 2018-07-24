@@ -1,10 +1,13 @@
 build/
 data/
 .idea/
+.vs/
 cmake-build-debug/
 /3rdparty/caffe/
 /3rdparty/caffe_build/
 /3rdparty/opencv_build/
 /3rdparty/opencv-3.4.1/
+/3rdparty/opencv/
+/3rdparty/boost_1_67_0/
 /shell/remote_config.except
 /shell/update_remote_raspi.expect
