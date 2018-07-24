@@ -200,4 +200,4 @@ RC::SERIAL_FLAGS RC::STRING::serial_encode(char *data) {
     }
     return empty;
 }
-#endif
+#endif // __linux__

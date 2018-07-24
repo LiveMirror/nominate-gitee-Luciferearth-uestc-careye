@@ -8,12 +8,12 @@
 #include <map>
 #include <string>
 #include <rc_log/rclog.h>
+#include <fcntl.h>
+#include <iostream>
 #include <rc_globalVarable/rc_global_serial.h>
 #ifdef __linux__
-#include <fcntl.h>
 #include <termios.h>
 #include <zconf.h>
-#include <iostream>
 #else
 
 #endif

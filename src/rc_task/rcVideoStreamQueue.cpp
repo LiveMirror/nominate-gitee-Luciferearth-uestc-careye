@@ -13,6 +13,7 @@ int RC::ImageTaskQueue::initTaskMannger(int argc, char **argv) {
     RC::LOG::logInfo(RC_VIDEOQUEUE_STRING_INITATION);
     ImageTaskQueue::argc=argc;
     ImageTaskQueue::argv=argv;
+	return 1;
 }
 int RC::ImageTaskQueue::pushGUIImage(cv::Mat image) {
     cv::Mat imageUnion;
@@ -20,6 +21,7 @@ int RC::ImageTaskQueue::pushGUIImage(cv::Mat image) {
     delete image.data;
     if(guiImage.size()>RC_MAX_GUI_QUEUE)
         guiImage.push(image);
+	return 1;
 }
 void RC::ImageTaskQueue::popGUIImage(cv::Mat *outImage) {
     if(!guiImage.empty())
@@ -32,6 +34,7 @@ int RC::ImageTaskQueue::pushWebImage(cv::Mat image) {
     delete image.data;
     if(webImage.size()>RC_MAX_WEBSTREAM_QUEUE)
         webImage.push(image);
+	return 1;
 }
 void RC::ImageTaskQueue::popWebImage(cv::Mat *outImage) {
     if(!webImage.empty())

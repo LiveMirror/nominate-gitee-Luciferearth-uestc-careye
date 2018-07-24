@@ -9,8 +9,9 @@
 #include "rc_param.h"
 #include <rc_log/rclog.h>
 #include <fcntl.h>
+#ifdef __linux__
 #include <zconf.h>
-
+#endif // __linux__
 
 #define RC_STRING_SYSTEM_START (char*)"System Start"
 

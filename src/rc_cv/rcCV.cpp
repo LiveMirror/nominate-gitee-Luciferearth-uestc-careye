@@ -179,7 +179,7 @@ cv::Mat dst;
 void on_Trackbar(int, void*)
 {
     sliderValue = (double)Sildermark / Maxsilder;
-    cv::imshow("二值化阈值", dst);
+    cv::imshow("Value", dst);
 }
 void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
     cv::Mat ROI_IMAGE=src(cv::Rect(16,src.rows/2,100,src.rows/2));
@@ -188,18 +188,18 @@ void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
 
     int left;
     int right;
-
+#ifdef __linux__
     double thresh = Sildermark;
-    cv::namedWindow("二值化阈值", 1);
-    cv::resizeWindow("二值化阈值",500,500);
+    cv::namedWindow("Value", 1);
+    cv::resizeWindow("Value",500,500);
     char TrackbarName[50];
-    sprintf(TrackbarName, "二值化阈值 %d", Maxsilder);
-    cv::createTrackbar(TrackbarName, "二值化阈值", &Sildermark, Maxsilder, on_Trackbar);
+    sprintf(TrackbarName, "Value %d", Maxsilder);
+    cv::createTrackbar(TrackbarName, "Value", &Sildermark, Maxsilder, on_Trackbar);
     cv::Mat kernel = (cv::Mat_<float>(3, 3) << 0, -1, 0, 0, 5, 0, 0, -1, 0);
     cv::filter2D(ROI_IMAGE, ROI_IMAGE, CV_8UC3, kernel);
     cv::cvtColor(ROI_IMAGE, gray_image, cv::COLOR_BGR2GRAY);
     cv::threshold(gray_image,thresh_image,thresh,255,cv::THRESH_BINARY);
-
+#endif
 
 //    for(int x=0;x<thresh_image.rows;x+=1){
 //        for(int y1=0,y2=thresh_image.cols/2;y1<thresh_image.cols/2;y1+=1,y2+=1){
