@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.7)
+set(CMAKE_CXX_STANDARD 11)
+project(RoboCar)
+set(RC_TEST ON)
+
+include(src/cmake/rcPlathformConfigCmake.cmake)
+include(src/cmake/rcOpenCVCmake.cmake)
+include(src/cmake/rcCaffeCmake.cmake)
+include(src/cmake/rcEnviromentVariableCmake.cmake)
+include(src/cmake/rcGlobalIncludeCmake.cmake)
+include(src/cmake/rcVLCCmake.cmake)
+include(src/cmake/rcJsonCmake.cmake)
+include(src/cmake/rcLogCmake.cmake)
+
+include(src/cmake/rcMainCmake.cmake)
+include(src/cmake/rcMoveCmake.cmake)
+include(src/cmake/rcCVCmake.cmake)
+include(src/cmake/rcGUICmake.cmake)
+include(src/cmake/rcSerialCmake.cmake)
+include(src/cmake/rcRTMPCmake.cmake)
+include(src/cmake/rcTestCmake.cmake)
+
+include(src/cmake/rcTaskCmake.cmake)

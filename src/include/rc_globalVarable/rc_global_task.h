@@ -1,0 +1,11 @@
+//
+// Created by PulsarV on 18-5-14.
+//
+
+#ifndef ROBOCAR_RC_GLOBAL_TASK_H_H
+#define ROBOCAR_RC_GLOBAL_TASK_H_H
+#define RC_MAX_WEBSTREAM_QUEUE 20
+#define RC_MAX_GUI_QUEUE 20
+#define RC_MAX_CAMERA_IMAGE_QUEUE 20
+#define RC_VIDEOQUEUE_STRING_INITATION (char*)"Init task threadpool"
+#endif //ROBOCAR_RC_GLOBAL_TASK_H_H

@@ -1,0 +1,13 @@
+#!/usr/bin/expect
+set timeout 30
+set raspi_remote_address "192.168.1.109"
+set raspi_remote_user "pi"
+set raspi_remote_password "hacker\n"
+set raspi_remote_file_path "/home/pi/workspace/uestc-careye"
+set raspi_remote_ssh $raspi_remote_user@$raspi_remote_address:$raspi_remote_file_path
+set raspi_local_file_path "src"
+spawn echo Push to $raspi_local_file_path
+spawn scp -r $raspi_local_file_path $raspi_remote_ssh
+expect "password:"
+send $raspi_remote_password
+interact
