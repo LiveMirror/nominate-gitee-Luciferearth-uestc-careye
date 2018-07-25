@@ -9,5 +9,7 @@ cmake-build-debug/
 /3rdparty/opencv-3.4.1/
 /3rdparty/opencv/
 /3rdparty/boost_1_67_0/
+!/3rdparty/boost_1_67_0/README.MD
+/3rdparty/opencv/README.MD
 /shell/remote_config.except
 /shell/update_remote_raspi.expect

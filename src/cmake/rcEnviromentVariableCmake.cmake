@@ -6,6 +6,10 @@ set(MAIN_DIR ${PROJECT_SOURCE_DIR})
 message(STATUS "MAIN_DIR is ${MAIN_DIR}")
 set(LIB_DIR ${PROJECT_BINARY_DIR}/libs)
 
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	include_directories(${PROJECT_SOURCE_DIR}/3rdparty/boost_1_67_0)
+endif (CMAKE_SYSTEM_NAME MATCHES "Windows")
+
 set(VLC_LIBS
         vlc
         )

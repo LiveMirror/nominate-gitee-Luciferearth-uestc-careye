@@ -93,7 +93,7 @@ int RC::RobotCarMove::start() {
                     }
                 }
 #endif // __linux__
-                cv::imshow("", re_frame);
+                cv::imshow("", frame);
             }
             char key = cv::waitKey(20);
             if(key=='c')this->AutoMove=this->AutoMove==true? false:true;
@@ -199,5 +199,42 @@ void RC::RobotCarMove::wheel_go_forward() {
 void RC::RobotCarMove::wheel_go_backward() {
     this->serial_device->send((char *) RC_WHEEL_GO_FORWARD);
 
+}
+#else
+void RC::RobotCarMove::wheel_1_backward(double trangle) {
+}
+
+void RC::RobotCarMove::wheel_1_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_2_backward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_2_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_3_backward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_3_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_AC() {
+}
+
+void RC::RobotCarMove::wheel_CW() {
+
+}
+
+void RC::RobotCarMove::wheel_go_forward() {
+
+}
+
+void RC::RobotCarMove::wheel_go_backward() {
 }
 #endif // __linux__

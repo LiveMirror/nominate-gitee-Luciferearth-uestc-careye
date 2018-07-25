@@ -2,13 +2,16 @@
 // Created by PulsarV on 18-5-11.
 //
 #include <rc_serial/rcserial.h>
+#ifdef __linux__
 #include <zconf.h>
+#endif // __linux__
 #include <iostream>
 #include <cstring>
 
 using namespace RC;
 
 int main() {
+#ifdef __linux__
     Serial sr;
     sr.openSerial((char*)"/dev/ttyUSB0");
     int counter=0;
@@ -29,6 +32,7 @@ int main() {
         }
 
     }
+#endif // __linux__
     return 0;
 }
 

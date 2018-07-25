@@ -1,4 +1,6 @@
 set(LIB_NAME rclog)
+set(SLIB_NAME lrclog)
 set(SOURCE_FILES src/rc_log/rclog.cpp)
 include_directories(src/include)
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
+add_library(${SLIB_NAME} ${SOURCE_FILES})
