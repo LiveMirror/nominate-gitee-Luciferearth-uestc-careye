@@ -1,16 +1,5 @@
-set(LIB_NAME rcslamradar)
-
 set(RPLIDAR_SDK_PATH ${PROJECT_SOURCE_DIR}/src/rc_mapping/slam_radar)
 
-#FILE(GLOB RPLIDAR_SDK_SRC
-#        "${RPLIDAR_SDK_PATH}/src/arch/linux/*.cpp"
-#        "${RPLIDAR_SDK_PATH}/src/hal/*.cpp"
-#        "${RPLIDAR_SDK_PATH}/src/*.cpp"
-#        )
-#include_directories(
-#        ${RPLIDAR_SDK_PATH}/include
-#        ${RPLIDAR_SDK_PATH}/src
-#)
 include_directories(${PROJECT_SOURCE_DIR}/src/rc_mapping/slam_radar/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/rc_mapping/slam_radar)
 include_directories(${PROJECT_SOURCE_DIR}/src/rc_mapping/slam_radar/src)
@@ -78,6 +67,3 @@ else(CMAKE_SYSTEM_NAME MATCHES "Windows")
             ${PROJECT_SOURCE_DIR}/src/rc_mapping/slam_radar/src/arch/win32/winthread.hpp
             )
 endif()
-
-#add_library(${LIB_NAME} STATIC ${RCSLAMRADAR_FILES})
-#target_link_libraries(${LIB_NAME} ${OpenCV_LIBS})

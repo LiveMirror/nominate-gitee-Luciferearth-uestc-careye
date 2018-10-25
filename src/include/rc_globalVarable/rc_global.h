@@ -2,6 +2,8 @@
 // Created by PulsarV on 18-5-10.
 //
 
+#define RADIAN CV_PI/180.0
+
 #define ROBOCAR_RC_GLOBAL_H
 #define TEST 0
 #define RC_SERIAL_DEVICE (char*)"/dev/ttyUSB0"
