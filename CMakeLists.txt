@@ -6,6 +6,7 @@ set(RC_LIB ON)
 
 include(src/cmake/rcPlathformConfigCmake.cmake)
 include(src/cmake/rcSLAMRadarCmake.cmake)
+include(src/cmake/rcOpenGLCmake.cmake)
 include(src/cmake/rcOpenCVCmake.cmake)
 include(src/cmake/rcCaffeCmake.cmake)
 include(src/cmake/rcEnviromentVariableCmake.cmake)
