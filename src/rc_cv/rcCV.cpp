@@ -3,7 +3,6 @@
 //
 
 #include <rc_cv/rcCV.h>
-
 void RC::CV::fillter_8UC1(int max, cv::Mat *gray) {
     cv::MatIterator_<uchar> it, end;
     for (it = gray->begin<uchar>(), end = gray->end<uchar>(); it != end; ++it) {
@@ -172,14 +171,14 @@ std::vector<cv::Rect> RC::CV::detcetBody(cv::Mat src) {
 //TODO:TEST
 double sliderValue;//滚动条对应变量
 const int Maxsilder = 255;
-int Sildermark=70;//滚动条对应变量
+int Sildermark=220;//滚动条对应变量
 cv::Mat dst;
 
 
 void on_Trackbar(int, void*)
 {
     sliderValue = (double)Sildermark / Maxsilder;
-    cv::imshow("二值化阈值", dst);
+	cv::imshow("Value", dst);
 }
 void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
     cv::Mat ROI_IMAGE=src(cv::Rect(16,src.rows/2,100,src.rows/2));
@@ -190,24 +189,23 @@ void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
     int right;
 
     double thresh = Sildermark;
-    cv::namedWindow("二值化阈值", 1);
-    cv::resizeWindow("二值化阈值",500,500);
+    cv::namedWindow("Value", 1);
     char TrackbarName[50];
-    sprintf(TrackbarName, "二值化阈值 %d", Maxsilder);
-    cv::createTrackbar(TrackbarName, "二值化阈值", &Sildermark, Maxsilder, on_Trackbar);
+    sprintf(TrackbarName, "Value %d", Maxsilder);
+    cv::createTrackbar(TrackbarName, "Value", &Sildermark, Maxsilder, on_Trackbar);
     cv::Mat kernel = (cv::Mat_<float>(3, 3) << 0, -1, 0, 0, 5, 0, 0, -1, 0);
     cv::filter2D(ROI_IMAGE, ROI_IMAGE, CV_8UC3, kernel);
     cv::cvtColor(ROI_IMAGE, gray_image, cv::COLOR_BGR2GRAY);
     cv::threshold(gray_image,thresh_image,thresh,255,cv::THRESH_BINARY);
 
-
-//    for(int x=0;x<thresh_image.rows;x+=1){
-//        for(int y1=0,y2=thresh_image.cols/2;y1<thresh_image.cols/2;y1+=1,y2+=1){
-//            if(thresh_image.at<uchar>(x,y1)<50)left+=1;
-//            if(thresh_image.at<uchar>(x,y2)<50)right+=1;
-////            thresh_image.at<uchar>(x,y2)=200;
-//        }
-//    }
+	/*
+    for(int x=0;x<thresh_image.rows;x+=1){
+        for(int y1=0,y2=thresh_image.cols/2;y1<thresh_image.cols/2;y1+=1,y2+=1){
+            if(thresh_image.at<uchar>(x,y1)<50)left+=1;
+            if(thresh_image.at<uchar>(x,y2)<50)right+=1;
+            thresh_image.at<uchar>(x,y2)=200;
+        }
+    }*/
     int sum_x=0,sum_y=0,area=1;
     for(int x=0;x<thresh_image.rows;x+=1){
         for (int y = 0; y < thresh_image.cols; y+=1) {
@@ -219,21 +217,25 @@ void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
         }
     }
     int center_x=(sum_x/area),center_y=sum_y/area;
-//    std::cout<<center_x<<","<<center_y<<std::endl;
-//    try{
-//        thresh_image.at<uchar>(center_x,center_y)=100;
-//        for (int i = center_x,j=center_x; i <center_x+5 ; i++,j--) {
-//            for (int k=center_y,l =center_y ; k <center_y+5 ; k++) {
-//                thresh_image.at<uchar>((uchar)i,(uchar)k)=100;
-//                thresh_image.at<uchar>((uchar)j,(uchar)l)=100;
-//                thresh_image.at<uchar>((uchar)i,(uchar)l)=100;
-//                thresh_image.at<uchar>((uchar)j,(uchar)k)=100;
-//            }
-//        }
-//    }catch (error_t e){
-//
-//    }
+    std::cout<<center_x<<","<<center_y<<std::endl;
+	try {
+		thresh_image.at<uchar>(center_x, center_y) = 100;
+		for (int i = center_x, j = center_x; i <center_x + 5; i++, j--) {
+			for (int k = center_y, l = center_y; k <center_y + 5; k++) {
+				thresh_image.at<uchar>((uchar)i, (uchar)k) = 100;
+				thresh_image.at<uchar>((uchar)j, (uchar)l) = 100;
+				thresh_image.at<uchar>((uchar)i, (uchar)l) = 100;
+				thresh_image.at<uchar>((uchar)j, (uchar)k) = 100;
+			}
+		}
+	}
+	catch (const std::exception&) {
+		
+	}
+        
     dst=thresh_image;
+	
+	cv::resize(dst, dst, cv::Size(640, 480), 0, 0, cv::INTER_LINEAR);
     on_Trackbar(Sildermark, 0);
     ans[0]=center_y;
     ans[1]=center_x;

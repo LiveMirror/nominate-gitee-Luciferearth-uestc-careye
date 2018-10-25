@@ -3,6 +3,7 @@
 //
 #include <rc_serial/rc_gyro_serial.h>
 #include <rc_serial/rcserial.h>
+#ifdef __linux__
 void RC::GyroCommond::setBackSpeed(int speed) {
     switch (speed){
         case GYRO_0D1HZ:
@@ -53,4 +54,5 @@ void RC::GyroCommond::getContent(char *buffer,int size) {
 void RC::GyroCommond::setBackContent(char **arg) {
 
 }
+#endif // __linux__
 

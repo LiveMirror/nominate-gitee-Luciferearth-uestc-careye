@@ -11,14 +11,23 @@ void RC::start_rtmp_server(ServerInfo server_info) {
 }
 void RC::d_start_robot(DeviceInfo device_info) {
     RC::LOG::logInfo((char*)"Waiting for loading....");
+
+#ifdef __linux__
     sleep(1);
+#else
+	Sleep(1);
+#endif // __linux__
     RobotCarMove robot;
     robot.init(device_info.camera_index, device_info.serial_port,device_info.mapping);
     robot.start();
 }
 void RC::f_start_robot(FDeviceInfo device_info) {
     RC::LOG::logInfo((char*)"Waiting for loading....");
-    sleep(1);
+#ifdef __linux__
+	sleep(1);
+#else
+    Sleep(1);
+#endif // __linux__
     RobotCarMove robot;
     robot.init(device_info.camera_file_path, device_info.serial_port,device_info.mapping);
     robot.start();

@@ -7,7 +7,7 @@
 
 #include <opencv2/opencv.hpp>
 namespace RC {
-    typedef struct _rc_line{
+    typedef struct rc_line{
         int theta;
         int r;
     }rc_line;

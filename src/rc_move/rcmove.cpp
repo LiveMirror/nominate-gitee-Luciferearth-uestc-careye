@@ -25,7 +25,9 @@ int RC::RobotCarMove::init(char *video, char *device, char *mapping) {
 
 int RC::RobotCarMove::init_serial_device(char *device) {
     this->serial_device = new Serial();
+#ifdef __linux__
     this->serial_device->openSerial(device);
+#endif // __linux__
     return 1;
 }
 
@@ -62,52 +64,44 @@ int RC::RobotCarMove::start() {
             cv::Mat frame, output;
             cap >> frame;
             cv::Mat re_frame;
-            cv::resize(frame,re_frame,cv::Size(128,128),0,0,cv::INTER_LINEAR);
-            int ans[2]={0,0};
-            CV::detcetByRightAndLeft(re_frame,ans);
+            cv::resize(frame, re_frame, cv::Size(128, 128), 0, 0, cv::INTER_LINEAR);
+            int ans[2] = {0, 0};
+            CV::detcetByRightAndLeft(re_frame, ans);
             if (not frame.empty()) {
                 if (this->serial_device->isOpend() and this->AutoMove) {
-                    if(ans[0]>(128/2)+10){
-//                        this->wheel_1_backward(20);
+                    if (ans[0] > (128 / 2) + 10) {
                         this->wheel_AC();
                     }
-                    if(ans[0]<(128/2)-10){
-//                        this->wheel_2_forward(20);
+                    if (ans[0] < (128 / 2) - 10) {
                         this->wheel_CW();
                     }
                     this->wheel_go_backward();
                     char buffer[64] = {'\0'};
-                    this->serial_device->recive(buffer,64);
+                    this->serial_device->recive(buffer, 64);
                     std::string data = buffer;
-                    std::cout<<ans[0]<<","<<ans[1]<<std::endl;
-                    if (!data.empty()){
-                        LOG::logDebug(buffer);
-                    } else{
-                        cv::waitKey(1000);
+                    std::cout << ans[0] << "," << ans[1] << std::endl;
+                    cv::imshow("", frame);
+                }
+                char key = cv::waitKey(20);
+                if (key == 'c')this->AutoMove = this->AutoMove == true ? false : true;
+                if (map.is_open()) {
+                    if (!map.eof()) {
+                        char com = map.get();
+                        this->command(com);
+                        continue;
                     }
                 }
-                cv::imshow("", frame);
-            }
-            char key = cv::waitKey(20);
-            if(key=='c')this->AutoMove=this->AutoMove==true? false:true;
-            if (map.is_open()) {
-                if (!map.eof()) {
-                    char com = map.get();
-                    this->command(com);
-                    continue;
+                if (key == 'x')break;
+                if (mapping == NULL)
+                    if ((int) key > 65 and (int) key < 122)
+                        mapped << &key;
+                if (this->serial_device->isOpend()) {
+                    this->command(key);
                 }
-            }
-            if (key == 'x')break;
-            if (mapping == NULL)
-                if ((int) key > 65 and (int) key < 122)
-                    mapped << &key;
-            if (this->serial_device->isOpend()) {
-                this->command(key);
             }
         }
     } else
         return LOG::logError(RC_OPEN_CAMERA_ERROR);
-    this->serial_device->release();
     cv::destroyAllWindows();
     mapped.close();
     return 1;
@@ -141,6 +135,8 @@ void RC::RobotCarMove::command(char com) {
             break;
     }
 }
+
+#ifdef __linux__
 
 void RC::RobotCarMove::wheel_1_backward(double trangle) {
     this->serial_device->send(RC_WHEEL_1_BACKWARD);
@@ -189,3 +185,42 @@ void RC::RobotCarMove::wheel_go_backward() {
     this->serial_device->send((char *) RC_WHEEL_GO_FORWARD);
 
 }
+
+#else
+void RC::RobotCarMove::wheel_1_backward(double trangle) {
+}
+
+void RC::RobotCarMove::wheel_1_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_2_backward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_2_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_3_backward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_3_forward(double trangle) {
+
+}
+
+void RC::RobotCarMove::wheel_AC() {
+}
+
+void RC::RobotCarMove::wheel_CW() {
+
+}
+
+void RC::RobotCarMove::wheel_go_forward() {
+
+}
+
+void RC::RobotCarMove::wheel_go_backward() {
+}
+#endif // __linux__
