@@ -1,11 +1,11 @@
 #!/usr/bin/expect
 set timeout 30
-set robot_remote_address "192.168.1.133"
-set robot_remote_user "pulsar"
-set robot_remote_password "hacker\n"
-set robot_remote_file_path "/home/pulsar/workspace/RoboCar"
+set robot_remote_address "192.168.1.108"
+set robot_remote_user "root"
+set robot_remote_password "root\n"
+set robot_remote_file_path "/root/workspace/uestc-careye"
 set robot_remote_ssh $robot_remote_user@$robot_remote_address:$robot_remote_file_path
-set robot_local_file_path "cmake-build-debug/bin"
+set robot_local_file_path "src"
 
 spawn echo Push to $robot_remote_ssh
 spawn scp -r $robot_local_file_path $robot_remote_ssh

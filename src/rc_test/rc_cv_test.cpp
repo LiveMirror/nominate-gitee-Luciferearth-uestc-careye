@@ -2,20 +2,25 @@
 // Created by PulsarV on 18-5-12.
 //
 #include <opencv2/opencv.hpp>
-#include <rc_cv/rcCV.h>
+#include <rc_main/main.h>
 
-int main() {
+int main(int argc,char **argv) {
+    int CAMERA_DEVICE=0;
+    for (int i = 0; i < argc; i += 1) {
+        std::string commond = argv[i];
+        if (commond == RC_PARAM_INDEX)
+            if (argv[RC_START_PARAM])
+                CAMERA_DEVICE = atoi(argv[RC_START_PARAM]);
+    }
     cv::VideoCapture cap;
-    cap.open(1);
+    cap.open(CAMERA_DEVICE);
     if (cap.isOpened()) {
         while (true) {
             cv::Mat frame, output;
             cap >> frame;
-            int ans[2];
-//            RC::CV::detectLine(frame, &output);
-            RC::CV::detcetByRightAndLeft(frame,ans);
-            cv::imshow("output", frame);
-            if (cv::waitKey(100) == 'q')break;
+            if(!frame.empty())
+                cv::imshow("output", frame);
+            if (cv::waitKey(1) == 'q')break;
         }
     }
     cv::destroyAllWindows();

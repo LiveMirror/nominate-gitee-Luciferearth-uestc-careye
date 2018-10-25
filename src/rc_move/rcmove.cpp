@@ -86,7 +86,7 @@ int RC::RobotCarMove::start() {
                         cv::waitKey(1000);
                     }
                 }
-                cv::imshow("", re_frame);
+                cv::imshow("", frame);
             }
             char key = cv::waitKey(20);
             if(key=='c')this->AutoMove=this->AutoMove==true? false:true;

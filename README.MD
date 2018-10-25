@@ -9,6 +9,8 @@
 # 关于外设  
 1. Emotiv脑电波耳机(可无外设)  
 2. STM32/Arduino/MSP430  
+3. 思岚激光雷达
+4. JY901 IMU惯性导航模块
 
 #外设交互格式  
 alpha:脑电波alpha波  
