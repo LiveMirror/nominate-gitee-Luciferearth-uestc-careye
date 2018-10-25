@@ -1,6 +1,4 @@
 if (RC_TEST)
-    include_directories(src/include)
-
     set(SERIAL_TEST ${PROJECT_SOURCE_DIR}/src/rc_test/rc_serial_test.cpp)
     add_executable(rc_serial_test ${SERIAL_TEST})
     if (RC_LIB STREQUAL "OFF")

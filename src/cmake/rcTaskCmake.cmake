@@ -1,9 +1,9 @@
 message(STATUS "Load Task Cmake")
 set(LIB_NAME rctask)
 set(RC_TASK_FILES
-        src/rc_task/rcVideoStreamQueue.cpp
-        src/rc_task/rcWebStream.cpp
-        src/rc_task/rcTaskManager.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_task/rcVideoStreamQueue.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_task/rcWebStream.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_task/rcTaskManager.cpp
         )
 if (RC_LIB STREQUAL "OFF")
     add_library(${LIB_NAME} SHARED ${RC_TASK_FILES})

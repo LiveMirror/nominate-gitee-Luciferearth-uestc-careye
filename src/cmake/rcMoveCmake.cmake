@@ -1,6 +1,6 @@
 
-set(RC_MOVE_FILES src/rc_move/rcmove.cpp)
-include_directories(src/include)
+set(RC_MOVE_FILES ${PROJECT_SOURCE_DIR}/src/rc_move/rcmove.cpp)
+
 if (RC_LIB STREQUAL "OFF")
     set(LIB_NAME rcmove)
     add_library(${LIB_NAME} SHARED ${RC_MOVE_FILES})

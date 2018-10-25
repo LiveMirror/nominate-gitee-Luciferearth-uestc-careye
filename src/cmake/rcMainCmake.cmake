@@ -1,6 +1,6 @@
 set(EXE_NAME RoboCar)
-set(SOURCE_FILES src/rc_main/main.cpp)
-include_directories(src/include)
+set(SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/rc_main/main.cpp)
+
 add_executable(${EXE_NAME} ${SOURCE_FILES})
 if (RC_LIB STREQUAL "OFF")
     if (CMAKE_SYSTEM_NAME MATCHES "Linux")

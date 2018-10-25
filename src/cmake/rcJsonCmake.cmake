@@ -1,9 +1,9 @@
 set(RC_JSON_FILES
-        src/rc_json/json_reader.cpp
-        src/rc_json/json_tool.h
-        src/rc_json/json_value.cpp
-        src/rc_json/json_valueiterator.inl
-        src/rc_json/json_writer.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_json/json_reader.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_json/json_tool.h
+        ${PROJECT_SOURCE_DIR}/src/rc_json/json_value.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_json/json_valueiterator.inl
+        ${PROJECT_SOURCE_DIR}/src/rc_json/json_writer.cpp
         )
 
 if (RC_LIB STREQUAL "OFF")

@@ -1,7 +1,7 @@
 set(LIB_NAME rcserial)
 set(RC_SERAIL_FILES
-        src/rc_serial/rcserial.cpp
-        src/rc_serial/rc_gyro_serial.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_serial/rcserial.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_serial/rc_gyro_serial.cpp
         )
 if (RC_LIB STREQUAL "OFF")
     add_library(${LIB_NAME} SHARED ${RC_SERAIL_FILES})

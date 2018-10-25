@@ -1,4 +1,4 @@
-set(RC_GUI_FILES src/rc_gui/rcGUI.cpp)
+set(RC_GUI_FILES ${PROJECT_SOURCE_DIR}/src/rc_gui/rcGUI.cpp)
 
 if (RC_LIB STREQUAL "OFF")
     set(LIB_NAME rcgui)

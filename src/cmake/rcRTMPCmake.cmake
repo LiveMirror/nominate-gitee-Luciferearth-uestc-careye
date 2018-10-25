@@ -1,6 +1,6 @@
 
 set(RC_RTMP_FILES
-        src/rc_rtmp/rcrtmp.cpp
+        ${PROJECT_SOURCE_DIR}/src/rc_rtmp/rcrtmp.cpp
         )
 
 if (RC_LIB STREQUAL "OFF")
