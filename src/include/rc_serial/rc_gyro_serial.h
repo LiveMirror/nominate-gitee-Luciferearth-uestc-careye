@@ -3,7 +3,7 @@
 //
 #include <rc_serial/rcserial.h>
 namespace RC{
-    class GyroCommond:public Serial{
+    class GyroDevice:public Serial{
     public:
         void setBackContent(char **arg);
         void setBackSpeed(int speed);

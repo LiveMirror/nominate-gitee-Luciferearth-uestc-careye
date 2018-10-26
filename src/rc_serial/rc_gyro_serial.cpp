@@ -4,7 +4,7 @@
 #include <rc_serial/rc_gyro_serial.h>
 #include <rc_serial/rcserial.h>
 #ifdef __linux__
-void RC::GyroCommond::setBackSpeed(int speed) {
+void RC::GyroDevice::setBackSpeed(int speed) {
     switch (speed){
         case GYRO_0D1HZ:
             this->send(GYRO_SERIAL_BACK_SPEED_0D1HZ);
@@ -47,11 +47,11 @@ void RC::GyroCommond::setBackSpeed(int speed) {
             break;
     }
 }
-void RC::GyroCommond::getContent(char *buffer,int size) {
+void RC::GyroDevice::getContent(char *buffer,int size) {
     this->send(GYRO_SERIAL_BACK_SPEED_ONCE);
     this->recive(buffer,size);
 }
-void RC::GyroCommond::setBackContent(char **arg) {
+void RC::GyroDevice::setBackContent(char **arg) {
 
 }
 #endif // __linux__

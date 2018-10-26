@@ -2,12 +2,14 @@
 // Created by PulsarV on 18-10-25.
 //
 #include <rplidar.h>
-#include <rplidar_driver.h>
 
 #ifndef _countof
 #define _countof(_Array) (int)(sizeof(_Array) / sizeof(_Array[0]))
 #endif
 
+
+#include <signal.h>
+#include <cstdlib>
 #include <unistd.h>
 #include <cstdio>
 
@@ -21,8 +23,7 @@ static inline void delay(_word_size_t ms){
 }
 using namespace rp::standalone::rplidar;
 
-bool checkRPLIDARHealth(RPlidarDriver * drv)
-{
+bool checkRPLIDARHealth(RPlidarDriver * drv) {
     u_result     op_result;
     rplidar_response_device_health_t healthinfo;
 
@@ -43,8 +44,6 @@ bool checkRPLIDARHealth(RPlidarDriver * drv)
     }
 }
 
-#include <signal.h>
-#include <cstdlib>
 
 bool ctrl_c_pressed;
 void ctrlc(int)
@@ -163,7 +162,7 @@ int main(int argc,const char *argv[]){
 
     // fetech result and print it out...
     while (1) {
-        rplidar_response_measurement_node_t nodes[8192];
+        rplidar_response_measurement_node_t nodes[360*22];
         size_t   count = _countof(nodes);
 
         op_result = drv->grabScanData(nodes, count);
@@ -182,8 +181,6 @@ int main(int argc,const char *argv[]){
         if (ctrl_c_pressed){
             break;
         }
-        drv->stop();
-        drv->stopMotor();
         break;
     }
 
