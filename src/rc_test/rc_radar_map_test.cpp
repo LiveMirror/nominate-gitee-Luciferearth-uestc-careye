@@ -15,7 +15,7 @@
 #define _countof(_Array) (int)(sizeof(_Array) / sizeof(_Array[0]))
 
 #define GL_WIDTH 480
-#define MAX_RADAR_DIST 600
+#define MAX_RADAR_DIST 1500
 #define RADAR_STEP 0.01
 using namespace rp::standalone::rplidar;
 
@@ -25,11 +25,18 @@ float p1step = 1.75f;
 //float p1step = 0.0f;
 float p2step = 2.25f;
 RPlidarDriver *drv;
-typedef struct __dot__{
-    float theta;
-    float dist;
-}DOT;
-std::vector <DOT> dots;
+
+class DOT {
+public:
+    double theta, dist;
+
+    DOT(double theta, double dist) {
+        this->dist = dist;
+        this->theta = theta;
+    }
+};
+
+std::vector<DOT> dots;
 
 
 void draw_line(float x1, float y1, float x2, float y2) {
@@ -82,25 +89,11 @@ void draw_rader() {
     draw_line(0, 0, p1_x, p1_y);
     draw_line(0, 0, p2_x, p2_y);
     std::vector<DOT>::iterator it;
-    for(it=dots.begin();it!= dots.end();++it){
-        float x,y;
-        if(it->theta<90){
-            x=cos(it->theta)*(it->dist/MAX_RADAR_DIST);
-            y=sin(it->theta)*(it->dist/MAX_RADAR_DIST);
-        }
-        if(it->theta>90){
-            x=cos(it->theta)*(it->dist/MAX_RADAR_DIST);
-            y=-sin(it->theta)*(it->dist/MAX_RADAR_DIST);
-        }
-        if(it->theta>180){
-            x=-cos(it->theta)*(it->dist/MAX_RADAR_DIST);
-            y=-sin(it->theta)*(it->dist/MAX_RADAR_DIST);
-        }
-        if(it->theta>270){
-            x=-cos(it->theta)*(it->dist/MAX_RADAR_DIST);
-            y=sin(it->theta)*(it->dist/MAX_RADAR_DIST);
-        }
-        draw_point(x, y, 1, 1, 1, 0);
+    for (it = dots.begin(); it != dots.end(); ++it) {
+        float x = 0, y = 0;
+        x = cos(it->theta / 180 * PI) * (it->dist / MAX_RADAR_DIST);
+        y = sin(it->theta / 180 * PI) * (it->dist / MAX_RADAR_DIST);
+        draw_point(x, y, 0, 0, 1, 0);
     }
 
     glFlush();
@@ -133,14 +126,13 @@ void TimerFunction(int value) {
     op_result = drv->grabScanData(nodes, count);
     if (IS_OK(op_result)) {
         drv->ascendScanData(nodes, count);
-//        std::cout<<count<<std::endl;
         dots.clear();
         for (int pos = 0; pos < (int) count; ++pos) {
-            DOT dot;
-            dot.dist=nodes[pos].distance_q2 / 4.0f;
-            dot.theta=(nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f;
+            DOT dot(((nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f),
+                    (nodes[pos].distance_q2 / 4.0f));
+//            DOT dot(120.4,200);
             dots.push_back(dot);
-//            printf(" theta: %f Dist: %08.2f Q: %d \n",
+//            printf("%s theta: %f Dist: %08.2f Q: %d \n",
 //                   (nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT) ? "S " : "  ",
 //                   (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f,
 //                   nodes[pos].distance_q2 / 4.0f,
@@ -156,8 +148,8 @@ void TimerFunction(int value) {
 //    std::cout<<"当前角度1: "<<get_angle(p1_x,p1_y)<<" 当前角度2: "<<get_angle(p2_x,p2_y)<<std::endl;
 }
 
-bool checkRPLIDARHealth(RPlidarDriver * drv) {
-    u_result     op_result;
+bool checkRPLIDARHealth(RPlidarDriver *drv) {
+    u_result op_result;
     rplidar_response_device_health_t healthinfo;
 
 
@@ -176,8 +168,9 @@ bool checkRPLIDARHealth(RPlidarDriver * drv) {
         return false;
     }
 }
-void KeyBoards(unsigned char key,int x,int y) {
-    switch (key){
+
+void KeyBoards(unsigned char key, int x, int y) {
+    switch (key) {
         case 'q':
             drv->stop();
             drv->stopMotor();
@@ -201,43 +194,31 @@ int main(int argc, char **argv) {
 
     drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
     // make connection...
-    if(useArgcBaudrate)
-    {
-        if(!drv)
+    if (useArgcBaudrate) {
+        if (!drv)
             drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
-        if (IS_OK(drv->connect(opt_com_path, opt_com_baudrate)))
-        {
+        if (IS_OK(drv->connect(opt_com_path, opt_com_baudrate))) {
             op_result = drv->getDeviceInfo(devinfo);
 
-            if (IS_OK(op_result))
-            {
+            if (IS_OK(op_result)) {
                 connectSuccess = true;
-            }
-            else
-            {
+            } else {
                 delete drv;
                 drv = NULL;
             }
         }
-    }
-    else
-    {
-        size_t baudRateArraySize = (sizeof(baudrateArray))/ (sizeof(baudrateArray[0]));
-        for(size_t i = 0; i < baudRateArraySize; ++i)
-        {
-            if(!drv)
+    } else {
+        size_t baudRateArraySize = (sizeof(baudrateArray)) / (sizeof(baudrateArray[0]));
+        for (size_t i = 0; i < baudRateArraySize; ++i) {
+            if (!drv)
                 drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
-            if(IS_OK(drv->connect(opt_com_path, baudrateArray[i])))
-            {
+            if (IS_OK(drv->connect(opt_com_path, baudrateArray[i]))) {
                 op_result = drv->getDeviceInfo(devinfo);
 
-                if (IS_OK(op_result))
-                {
+                if (IS_OK(op_result)) {
                     connectSuccess = true;
                     break;
-                }
-                else
-                {
+                } else {
                     delete drv;
                     drv = NULL;
                 }
