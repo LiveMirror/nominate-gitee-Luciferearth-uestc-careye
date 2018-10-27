@@ -1,4 +1,4 @@
-## 基于OpenCV3与GTK3+的车辆辅助驾驶系统  
+## SLAM自动控制系统  
 > 编译依赖   
 > 1. OpenCV 3.4.1  
 > 2. libcurl  
