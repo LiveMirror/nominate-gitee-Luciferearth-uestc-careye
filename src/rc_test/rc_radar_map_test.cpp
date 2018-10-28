@@ -22,7 +22,6 @@ using namespace rp::standalone::rplidar;
 float p1_x = 0, p1_y = 0;
 float p2_x = 0, p2_y = 0;
 float p1step = 1.75f;
-//float p1step = 0.0f;
 float p2step = 2.25f;
 RPlidarDriver *drv;
 
@@ -90,11 +89,18 @@ void draw_rader() {
     draw_line(0, 0, p2_x, p2_y);
     std::vector<DOT>::iterator it;
     for (it = dots.begin(); it != dots.end(); ++it) {
-        float x = 0, y = 0;
-        x = cos(it->theta / 180 * PI) * (it->dist / MAX_RADAR_DIST);
-        y = sin(it->theta / 180 * PI) * (it->dist / MAX_RADAR_DIST);
+        float x,y,tx,ty;
+        x = cos(it->theta * PI/ 180 ) * (it->dist / MAX_RADAR_DIST);
+        y = sin(it->theta * PI/ 180 ) * (it->dist / MAX_RADAR_DIST);
+//        ty = sin(it->theta * PI/ 180 );
+//        tx = cos(it->theta * PI/ 180 );
+//        y = y>=ty?ty:y;
+//        x = x>=tx?tx:x;
         draw_point(x, y, 0, 0, 1, 0);
     }
+    float x=cos(45  * PI/ 180);
+    float y=sin(45 * PI/ 180 );
+    draw_point(x,y, 1, 1, 1, 0);
 
     glFlush();
     glutSwapBuffers();
@@ -130,7 +136,6 @@ void TimerFunction(int value) {
         for (int pos = 0; pos < (int) count; ++pos) {
             DOT dot(((nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f),
                     (nodes[pos].distance_q2 / 4.0f));
-//            DOT dot(120.4,200);
             dots.push_back(dot);
 //            printf("%s theta: %f Dist: %08.2f Q: %d \n",
 //                   (nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT) ? "S " : "  ",
@@ -140,10 +145,7 @@ void TimerFunction(int value) {
         }
     }
 
-    if (!ctrl_c_pressed) {
-//        exit(0);
-    }
-    glutPostRedisplay(); //标志重新绘制
+    glutPostRedisplay();
     glutTimerFunc(1, TimerFunction, 1);
 //    std::cout<<"当前角度1: "<<get_angle(p1_x,p1_y)<<" 当前角度2: "<<get_angle(p2_x,p2_y)<<std::endl;
 }
@@ -252,12 +254,9 @@ int main(int argc, char **argv) {
     // start scan...
     drv->startScan(0, 1);
     drv->startMotor();
-//    drv->stop();
-//    drv->stopMotor();
-//    getchar();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-//    glutInitWindowPosition(100, 100);
+    glutInitWindowPosition(100, 100);
     glutInitWindowSize(GL_WIDTH, GL_WIDTH);
     glMatrixMode(GL_PROJECTION);//设定投影方式
     glutCreateWindow("radar map");

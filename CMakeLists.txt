@@ -24,6 +24,7 @@ include(${PROJECT_SOURCE_DIR}/src/cmake/rcGUICmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcSerialCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcRTMPCmake.cmake)
 
+include(${PROJECT_SOURCE_DIR}/src/cmake/rcNetCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcMainCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcTestCmake.cmake)

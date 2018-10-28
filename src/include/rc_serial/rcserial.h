@@ -34,13 +34,6 @@ namespace RC {
     int set_serial(int fd, int nSpeed, int nBits, char nEvent, int nStop);
     typedef std::map<std::string, std::string> SERIAL_FLAGS;
     typedef std::pair<std::string, std::string> SERIAL_FLAG;
-//    struct termios {
-//        tcflag_t c_iflag;//输入选项
-//        tcflag_t c_oflag; //输出选项
-//        tcflag_t c_cflag; //控制选项
-//        tcflag_t c_lflag; //行选项
-//        cc_t c_cc[NCCS]; //控制字符
-//    };
 
     class Serial {
     public:
