@@ -8,6 +8,7 @@ sudo apt-get install git build-essential pkg-config libtool automake autopoint g
 * opencv 3.4.1  
 * caffe  
 * vlc  
+* googeltest  
 ```
 sudo apt-get install flex
 ```
