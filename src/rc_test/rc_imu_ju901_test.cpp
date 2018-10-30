@@ -336,21 +336,21 @@ int main() {
     char buf;
     fd_set rd;
     int nread = 0;
-    char buffer[5] = {char(0xff), char(0xaa), char(0x03), char(0x04), char(0x00)};
-    write(fd, buffer, 5);
+//    char buffer[5] = {char(0xff), char(0xaa), char(0x03), char(0x05), char(0x00)};
+//    write(fd, buffer, 5);
     int lock = true;
     std::vector<char> data_st;
     while (1) {
         FD_ZERO(&rd);
         FD_SET(fd, &rd);
-
         while (FD_ISSET(fd, &rd)) {
             if (select(fd + 1, &rd, NULL, NULL, NULL) < 0) {
                 perror("select error\n");
             } else {
                 while ((nread = read(fd, &buf, sizeof(buf))) > 0) {
-//                    std::cout << std::hex << (int) buf << " ";
+                    std::cout << std::hex << (int) buf << std::endl;
                     if (lock && buf != 0x55) {
+                        lock=true;
                         continue;
                     } else {
                         lock= false;
@@ -405,7 +405,6 @@ int main() {
                                 case 0x55:
                                     memcpy(&stcDStatus, &t_buf[2], 8);
                                     std::cout << "0x55" << std::endl;
-
                                     break;
                                 case 0x56:
                                     memcpy(&stcPress, &t_buf[2], 8);
@@ -432,9 +431,9 @@ int main() {
                 }
             }
         }
-        close(fd);
-        return 0;
     }
+    close(fd);
+    return 0;
 }
 
 #endif

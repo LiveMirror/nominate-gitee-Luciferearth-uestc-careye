@@ -66,6 +66,11 @@ int RC::RobotCarMove::start() {
             cv::Mat re_frame;
             cv::resize(frame, re_frame, cv::Size(128, 128), 0, 0, cv::INTER_LINEAR);
             int ans[2] = {0, 0};
+            cv::Mat thresh_image;
+            cv::Mat gray_image;
+//            cv::cvtColor(frame, gray_image, cv::COLOR_BGR2GRAY);
+//            cv::threshold(gray_image,thresh_image,100,255,cv::THRESH_BINARY);
+//            cv::imshow("",thresh_image);
             CV::detcetByRightAndLeft(re_frame, ans);
             if (not frame.empty()) {
                 if (this->serial_device->isOpend() and this->AutoMove) {

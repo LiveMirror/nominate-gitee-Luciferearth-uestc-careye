@@ -86,9 +86,9 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
 //    delete(gray_rgb.data);
 //    delete(mask.data);
 //    delete(hsv_image.data);
-//    cv::imshow("cap", *src);
+    cv::imshow("cap", src);
 //    cv::imshow("gray_rgb", gray_rgb);
-//    cv::imshow("trash_hsv", trash_hsv);
+    cv::imshow("trash_hsv", trash_hsv);
 //    cv::imshow("trash_rgb", trash_rgb);
 //    cv::imshow("cpu", dst_cpu);
 //    cv::imshow("mask", mask);
@@ -96,8 +96,7 @@ void RC::CV::detectLine(cv::Mat src, cv::Mat *dst) {
 //    cv::imshow("hsv", hsv_image);
 }
 
-void RC::CV::drawDetectLines(cv::Mat& image,const std::vector<cv::Vec4i>& lines,cv::Scalar & color)
-{
+void RC::CV::drawDetectLines(cv::Mat& image,const std::vector<cv::Vec4i>& lines,cv::Scalar & color) {
     // 将检测到的直线在图上画出来
     std::vector<cv::Vec4i>::const_iterator it=lines.begin();
     while(it!=lines.end())
@@ -181,10 +180,9 @@ void on_Trackbar(int, void*)
 	cv::imshow("Value", dst);
 }
 void RC::CV::detcetByRightAndLeft(cv::Mat &src,int* ans) {
-    cv::Mat ROI_IMAGE=src(cv::Rect(16,src.rows/2,100,src.rows/2));
+    cv::Mat ROI_IMAGE=src;//src(cv::Rect(16,src.rows/2,100,src.rows/2));
     cv::Mat thresh_image;
     cv::Mat gray_image;
-
     int left;
     int right;
 

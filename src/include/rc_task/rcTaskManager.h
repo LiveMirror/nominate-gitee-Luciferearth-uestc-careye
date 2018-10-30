@@ -28,7 +28,15 @@ namespace RC{
         char *server_address;
         int port;
     }ServerInfo;
+    /***
+     * 设备启动
+     * @param device_info
+     */
     void d_start_robot(DeviceInfo device_info);
+    /***
+     * 文件启动
+     * @param device_info
+     */
     void f_start_robot(FDeviceInfo device_info);
     void start_rtmp_server(ServerInfo server_info);
     class TaskManager{
