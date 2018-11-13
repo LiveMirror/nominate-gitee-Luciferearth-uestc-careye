@@ -18,8 +18,13 @@ int main(int argc,char **argv) {
         while (true) {
             cv::Mat frame, output;
             cap >> frame;
-            if(!frame.empty())
+            if(!frame.empty()){
                 cv::imshow("output", frame);
+                std::cout<<" step:"<<frame.step
+                         <<" chanel:"<<frame.channels()
+                         <<" cols:"<<frame.cols
+                         <<" rows:"<<frame.rows<<std::endl;
+            }
             if (cv::waitKey(1) == 'q')break;
         }
     }

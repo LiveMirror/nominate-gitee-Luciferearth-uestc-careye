@@ -4,13 +4,14 @@
 
 #include <rplidar.h>
 #include <GL/glut.h>
-#include <projects.h>
 #include <rplidar_driver.h>
 #include <unistd.h>
 #include <cstdio>
 #include <signal.h>
 #include <cstdlib>
 #include <iostream>
+#include <math.h>
+#define PI 3.1415926535
 
 #define _countof(_Array) (int)(sizeof(_Array) / sizeof(_Array[0]))
 

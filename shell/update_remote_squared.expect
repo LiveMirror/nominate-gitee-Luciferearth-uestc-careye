@@ -1,0 +1,14 @@
+#!/usr/bin/expect
+set timeout 30
+set robot_remote_address "10.1.1.191"
+set robot_remote_user "pulsar"
+set robot_remote_password "hacker\n"
+set robot_remote_file_path "/home/norse/WorkSpace/uestc-careye"
+set robot_remote_ssh $robot_remote_user@$robot_remote_address:$robot_remote_file_path
+set robot_local_file_path "src"
+
+spawn echo Push to $robot_remote_ssh
+spawn scp -r $robot_local_file_path $robot_remote_ssh
+expect "password:"
+send $robot_remote_password
+interact

@@ -14,11 +14,20 @@ if (RC_LIB)
             )
     add_library(${LIB_NAME} SHARED ${RC_FILES})
     if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-        target_link_libraries(${LIB_NAME} ${OpenCV_LIBS}  boost_system boost_thread pthread ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} glib-2.0 stdc++ m)
+        target_link_libraries(${LIB_NAME} ${OpenCV_LIBS}
+                boost_system
+                boost_thread
+                pthread
+                ${OPENGL_LIBRARIES}
+                ${GLUT_LIBRARY}
+                glib-2.0
+                stdc++
+                m
+                ${MPI_CXX_LIBRARIES})
     elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
         set(SLIB_NAME lrccv)
         add_library(${SLIB_NAME} ${RC_FILES})
-        target_link_libraries(${LIB_NAME} ${OPENCV_LIB}  boost_system boost_thread)
+        target_link_libraries(${LIB_NAME} ${OPENCV_LIB}  boost_system boost_thread ${MPI_CXX_LIBRARIES})
     endif ()
 endif ()
 

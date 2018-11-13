@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 11)
 project(RoboCar)
 
@@ -13,6 +13,7 @@ include(${PROJECT_SOURCE_DIR}/src/cmake/rcCaffeCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcEnviromentVariableCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcGlobalIncludeCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcVLCCmake.cmake)
+include(${PROJECT_SOURCE_DIR}/src/cmake/rcMpiCmake.cmake)
 
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcJsonCmake.cmake)
 include(${PROJECT_SOURCE_DIR}/src/cmake/rcLogCmake.cmake)

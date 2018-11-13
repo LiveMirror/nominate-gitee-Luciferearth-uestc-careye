@@ -1,3 +1,4 @@
+3rdparty/openmpi-3.1.3/
 build/
 data/
 .idea/
@@ -13,5 +14,3 @@ cmake-build-debug/
 /3rdparty/opencv/README.MD
 /shell/remote_config.except
 /shell/update_remote_raspi.expect
-将删除 doc/
-将删除 test_data/
